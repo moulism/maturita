@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 21 – Periferní zařízení pro IoT</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Periferní zařízení pro IoT</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 21</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 21 / 24</div>
+  <h1>Periferní zařízení pro IoT</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Periferie = vstupní (senzory = oči) nebo výstupní (aktuátory = svaly)</li><li>Senzory: teplota (DHT11), pohyb (PIR), vzdálenost (ultrazvuk), světlo (fotorezistor)</li><li>Aktuátory: LED, servo, displej, RELÉ (bezpečný most 5V ↔ 230V)</li><li>Shield = rozšiřující deska naclipovaná na Arduino (bez drátů)</li><li>Relé = elektromagnetický spínač — slaboproud ovládá silnoproud</li></ul></div>
+<h2>Co jsou periferie</h2>
+<p>Mikrokontrolér (ESP32) je „mozek" — ale je slepý a nemá ruce. Periferie jsou hardwarové moduly připojené na piny, které umožňují interakci s fyzickým světem.</p>
+
+<h2>Vstupní periferie (Senzory = Oči a uši)</h2>
+<div class="table-wrap"><table>
+<tr><th>Senzor</th><th>Co měří</th><th>Typická deska</th></tr>
+<tr><td>Teplota a vlhkost (DHT11/DHT22)</td><td>Teplota °C, vzdušná vlhkost %</td><td>Arduino, ESP32</td></tr>
+<tr><td>PIR senzor</td><td>Pohyb osob (infračervené záření)</td><td>Alarm, automatické světlo</td></tr>
+<tr><td>Ultrazvukový senzor (HC-SR04)</td><td>Vzdálenost 2 cm – 4 m</td><td>Parkovací asistent</td></tr>
+<tr><td>Fotorezistor (LDR)</td><td>Intenzita světla</td><td>Automatické stmívání</td></tr>
+<tr><td>Tlačítka a spínače</td><td>Stisk (HIGH/LOW)</td><td>Ovládání, triggery</td></tr>
+</table></div>
+
+<h2>Výstupní periferie (Aktuátory = Svaly)</h2>
+<div class="def-grid">
+<div class="def-t">LED diody</div><div class="def-d">Signalizace, stavové indikátory. Nutný ochranný rezistor!</div>
+<div class="def-t">Servo motor</div><div class="def-d">Přesný pohyb do zadaného úhlu (0–180°). Zámky, robotické rameno.</div>
+<div class="def-t">OLED/LCD displej</div><div class="def-d">Zobrazení textu a grafiky. Připojení přes I2C (jen 2 dráty!).</div>
+<div class="def-t">Relé</div><div class="def-d"><strong>Klíčová periferie!</strong> Elektromagnetický spínač — 5V z Arduina ovládá 230V spotřebič.</div>
+</div>
+
+<h2>Relé — proč je nepostradatelné</h2>
+<div class="box box-r"><strong>Bezpečný most mezi slaboproudem a silnoproudem</strong>
+Arduino pracuje s 5V a max. 40mA na pin. Žárovka, topení nebo bojler = 230V a ampéry. Nelze je propojit přímo — Arduino by okamžitě shořelo.<br><br>
+<strong>Relé:</strong> Arduino pošle 5V do cívky → cívka vytvoří magnetické pole → to přitáhne kotvu → kotva mechanicky sepne druhý, fyzicky oddělený 230V obvod. Slaboproud a silnoproud se nikdy fyzicky nedotýkají.</div>
+
+<h2>Shield — rozšiřující desky</h2>
+<p>Pokud připojíte 5 senzorů k Arduinu přes dráty na nepájivém poli, vznikne nepřehledné „hnízdo". <strong>Shield</strong> je rozšiřující deska se stejnými rozestupy pinů — prostě ji nacvaknete na Arduino jako Lego. Ethernet Shield, Motor Shield, Wi-Fi Shield.</p>
+
+<h2>Vstupně-výstupní periferie</h2>
+<p>Zařízení přijímající i odesílající data současně: dotykové displeje (výstup: obraz, vstup: dotyk), čtečky SD karet (čtení konfigurace i zápis logů).</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč nelze Arduino přímo připojit k 230V?"</strong> — Arduino pracuje se 5V/3,3V logickými signály a max. 40 mA na pin. Napájení 230V by okamžitě zničilo mikroprocesor. Relé tvoří fyzické oddělení — 230V obvod se fyzicky nikdy nedotýká Arduino pinů.</li>
+<li><strong>„Jaký je rozdíl PIR a ultrazvukový senzor?"</strong> — PIR: detekuje tepelné záření pohybujících se teplokrevných objektů (lidí). Binární výstup (pohyb/klid). Ultrazvuk: měří vzdálenost pomocí zvukových vln. Přesné numerické hodnoty v cm/mm.</li>
+<li><strong>„Co je I2C a proč je praktické?"</strong> — Komunikační sběrnice potřebující jen 2 dráty (SDA data, SCL hodiny). Na tyto 2 dráty lze připojit až 127 různých senzorů s různými adresami — ušetří se porty na Arduinu.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Relé je klíčová IoT periferie. Arduino generuje 5V a 20mA — s tím nelze zapnout bojler (230V, 10A). Relé tvoří bezpečný most: Arduino pošle slabý proud do cívky, ta vytvoří magnetické pole, to přitáhne mechanickou kontaktu, a kontakt sepne zcela oddělený 230V obvod. Fyzické oddělení slaboproudu od silnoproudu."</div>
+<div class="page-nav"><a href="20.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Elektrotechnika</span></a><a href="22.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>IoT data a vizualizace</span><span>→</span></a></div>
+</div></body></html>

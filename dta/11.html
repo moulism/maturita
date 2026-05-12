@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 11 &ndash; NumPy &ndash; ndarray, indexace, operace</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">NumPy &ndash; ndarray, indexace, operace</span>
+  <span class="topbar-subject-badge badge-dta">DTA 11</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 11 / 15</div>
+  <h1>NumPy &ndash; ndarray, indexace, operace</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>NumPy ndarray = fast numeric array; 10&ndash;100&times; rychlejší než Python list</li>
+<li><code>np.array([1,2,3])</code>, <code>np.zeros(n)</code>, <code>np.arange(start,stop,step)</code></li>
+<li>Indexace: <code>a[0]</code>, <code>a[1:4]</code>, <code>a[a &gt; 5]</code> (boolean masking)</li>
+<li>Broadcasting: <code>a * 2</code> vynásobí CELÉ pole bez for smyčky</li>
+<li>Ufunc: <code>np.sqrt()</code>, <code>np.mean()</code>, <code>np.sum()</code>, <code>np.dot()</code></li>
+</ul></div>
+
+<h2>Proč NumPy místo list?</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Python list</th><th>NumPy ndarray</th></tr>
+<tr><td>Datové typy</td><td>Smíšené (int, str, ...)</td><td>Jeden typ (homogenní)</td></tr>
+<tr><td>Výkon</td><td>Pomalý &ndash; interpretovaný Python</td><td>Velmi rychlý (zkompilovaný C/Fortran)</td></tr>
+<tr><td>Operace</td><td>Nutná for smyčka</td><td>Vektorizované operace (broadcasting)</td></tr>
+<tr><td>Paměť</td><td>Větší (reference na objekty)</td><td>Kompaktní (contiguous memory)</td></tr>
+</table></div>
+
+<h2>Vytváření polí</h2>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([1, 2, 3, 4, 5])
+b = np.zeros(5)                  <span class="cm"># [0. 0. 0. 0. 0.]</span>
+c = np.ones((3, 4))              <span class="cm"># matice 3×4 samých jedniček</span>
+d = np.arange(0, 10, 2)         <span class="cm"># [0 2 4 6 8]</span>
+e = np.linspace(0, 1, 5)        <span class="cm"># [0. 0.25 0.5 0.75 1.]</span>
+r = np.random.rand(3, 3)</pre>
+
+<h2>Indexace a slicování</h2>
+<pre>a = np.array([10, 20, 30, 40, 50])
+a[0]        <span class="cm"># 10</span>
+a[-1]       <span class="cm"># 50</span>
+a[1:4]      <span class="cm"># [20 30 40]</span>
+a[::2]      <span class="cm"># [10 30 50] &ndash; každý druhý</span>
+a[a &gt; 25]   <span class="cm"># [30 40 50] &ndash; boolean masking</span>
+
+m = np.array([[1,2,3],[4,5,6],[7,8,9]])
+m[0, 2]     <span class="cm"># 3 &ndash; řádek 0, sloupec 2</span>
+m[:, 1]     <span class="cm"># [2 5 8] &ndash; celý sloupec 1</span></pre>
+
+<h2>Broadcasting a vektorizace</h2>
+<pre><span class="cm"># Pomalé (for smyčka):</span>
+ceny_dph = [c * 1.21 <span class="kw">for</span> c <span class="kw">in</span> ceny]
+
+<span class="cm"># Rychlé (broadcasting):</span>
+ceny = np.array([100, 200, 300])
+ceny_dph = ceny * 1.21            <span class="cm"># operace na celém poli najednou</span></pre>
+
+<h2>Klíčové ufunc</h2>
+<pre>np.sqrt(a)     <span class="cm"># odmocnina</span>
+np.mean(a)     <span class="cm"># průměr</span>
+np.median(a)
+np.std(a)      <span class="cm"># směrodatná odchylka</span>
+np.sum(a)
+np.dot(a, b)   <span class="cm"># skalární součin (dot product)</span></pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč je ndarray rychlejší?</strong> &ndash; List ukládá reference na Python objekty rozptýlené v paměti. ndarray ukládá surová čísla hustě vedle sebe (contiguous memory) &ndash; CPU cache to zvládá mnohem lépe. Plus operace probíhají v C kódu.</li>
+<li><strong>Co je broadcasting?</strong> &ndash; Aplikace operace na celé pole bez for smyčky. <code>a * 2</code> vynásobí každý prvek 2. NumPy automaticky roztáhne skalár na tvar pole.</li>
+<li><strong>Rozdíl np.dot() vs *?</strong> &ndash; <code>*</code> je prvkové násobení: <code>[1,2] * [3,4] = [3,8]</code>. <code>np.dot()</code> je skalární součin: <code>[1,2]&middot;[3,4] = 1&times;3 + 2&times;4 = 11</code>.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+NumPy ndarray je základ datové analytiky &ndash; Pandas DataFrame je interně ndarray s popisky. Klíčový princip je broadcasting: místo for smyčky napíšu <code>ceny * 1.21</code> a NumPy operaci aplikuje na celé pole najednou v C kódu. Pro filtrování použiju boolean masking: <code>a[a &gt; 100]</code> vrátí jen prvky větší než 100.</div>
+
+<div class="page-nav"><a href="10.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Funkce a moduly v Pythonu</span></a><a href="12.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Pandas &ndash; DataFrame, import/export, práce s daty</span><span>&rarr;</span></a></div>
+</div></body></html>

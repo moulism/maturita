@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 04 – Multidimenzionální model a klasifikace dat</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Multidimenzionální model a klasifikace dat</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 04</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 04 / 24</div>
+  <h1>Multidimenzionální model a klasifikace dat</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>OLTP = transakční DB (blesková zápis/čtení) | OLAP = datový sklad (analýza)</li><li>Fakta = co měříme (čísla) | Dimenze = kontext (kdo, co, kdy, kde)</li><li>Schéma hvězdy = rychlé, fakta uprostřed, dimenze kolem</li><li>Schéma vločky = normalizovaná dimenze, šetří místo, ale pomalejší</li><li>Dimenze Čas se tvoří programově (CALENDARAUTO) → žádný vynechaný den</li><li>Garbage in → Garbage out = kvalita analýzy závisí na kvalitě dat</li></ul></div>
+<h2>OLTP vs. OLAP — transakční vs. analytický model</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>OLTP (transakční)</th><th>OLAP (datový sklad)</th></tr>
+<tr><td><strong>Účel</strong></td><td>Blesková práce s daty v reálném čase</td><td>Analýza a reporting historických dat</td></tr>
+<tr><td><strong>Operace</strong></td><td>Čtení + zápis (insert, update)</td><td>Výhradně čtení (SELECT)</td></tr>
+<tr><td><strong>Příklad</strong></td><td>Informační systém školy, e-shop</td><td>Power BI dashboard ředitele</td></tr>
+<tr><td><strong>Normalizace</strong></td><td>Silně normalizovaná (mnoho tabulek)</td><td>Denormalizovaná (hvězda/vločka)</td></tr>
+</table></div>
+
+<h2>Fakta a dimenze</h2>
+<div class="def-grid">
+<div class="def-t">Fakta</div><div class="def-d">Záznamy o událostech — <strong>číselné hodnoty</strong>, které měříme. Příklad: cena objednávky, počet prodaných kusů, sleva. Faktová tabulka je obrovská (miliony řádků).</div>
+<div class="def-t">Dimenze</div><div class="def-d">Popisují fakta — dávají jim kontext (Kdo, Co, Kdy, Kde). Příklad: Zákazník (jméno, věk, město), Produkt (název, barva, kategorie), Čas (datum, měsíc, čtvrtletí).</div>
+</div>
+
+<h2>Topologie modelů — Hvězda vs. Vločka</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Schéma hvězdy (Star)</th><th>Schéma vločky (Snowflake)</th></tr>
+<tr><td><strong>Struktura</strong></td><td>Fakta uprostřed, dimenze kolem</td><td>Dimenze se větví do pod-dimenzí</td></tr>
+<tr><td><strong>Rychlost</strong></td><td><span class="hl hl-g">Rychlejší</span> — max. 1 krok JOIN</td><td>Pomalejší — více JOINů</td></tr>
+<tr><td><strong>Místo na disku</strong></td><td>Větší (opakující se text)</td><td>Menší (normalizováno)</td></tr>
+<tr><td><strong>Použití v praxi</strong></td><td>✅ Power BI — téměř vždy</td><td>Spíše v datových skladech na zastaralém HW</td></tr>
+</table></div>
+
+<h2>Dimenze Čas — proč ji tvořit programově</h2>
+<p>Dimenze Čas (Kalendářní tabulka) se tvoří programově pomocí DAX funkce <code>CALENDARAUTO()</code>. Proč? Pokud se o víkendu nic neprodalo, víkend v datech chybí. Programová tabulka <strong>garantuje souvislou řadu dat</strong> bez vynechaného dne — to je nutné pro pokročilé časové funkce (srovnání s loňským rokem).</p>
+
+<h2>Datová kvalita — Garbage in, Garbage out</h2>
+<p>Analýza je jen tak dobrá, jak dobrá jsou data. Problémy: překlepy (Praha vs. PHA), chybějící hodnoty, různé formáty čísel. Dopad: Power BI vytvoří dva sloupce pro Prahu a PHA místo jednoho — manažer dostane zkreslenou analýzu. Čištění probíhá v <strong>Power Query</strong> (ETL proces).</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jaký je rozdíl faktová tabulka a dimenze?"</strong> — Fakta = co měříme (čísla, události). Dimenze = kontext, popis (kdo, kde, kdy). Faktová tabulka má miliony řádků. Dimenze mají tisíce.</li>
+<li><strong>„Proč v Power BI používat hvězdu místo vločky?"</strong> — Disk je levný, ale výpočetní čas není. Hvězda je rychlejší na čtení. V BI je rychlost kritická — ředitel nechce čekat 10 vteřin na kliknutí v grafu.</li>
+<li><strong>„Proč dimenze Čas nelze vzít přímo z dat?"</strong> — V datech chybí dny bez transakcí (víkendy, svátky). Programová tabulka garantuje každý den v roce.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„U schémat hvězdy a vločky se vždy svádí boj mezi úsporou místa a rychlostí. V dnešní době jsou disky levné, takže pro analytiku v Power BI se používá téměř výhradně hvězda. Nevadí nám, že se tisíckrát opakuje slovo 'Elektronika'. Klíčové je, že ředitel nekliká 10 vteřin, než se model prokouše přes více JOINů."</div>
+<div class="page-nav"><a href="03.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Zpracování dat v Excelu</span></a><a href="05.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Tvorba datových struktur — DAX</span><span>→</span></a></div>
+</div></body></html>

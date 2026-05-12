@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 04 – Práce s výrazy (CASE, CAST, pivotace)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Práce s výrazy (CASE, CAST, pivotace)</span>
+  <span class="topbar-subject-badge badge-dab">DAB 04</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 04 / 7</div>
+  <h1>Práce s výrazy – CASE, CAST, CONVERT, pivotace</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>CAST = konverze datového typu (text → číslo)</li>
+<li>CASE = IF-THEN-ELSE v SQL</li>
+<li>Jednoduchý CASE = přesná shoda | Hledaný CASE = podmínky (&lt;, &gt;)</li>
+<li>Pivotace = přetočení řádků na sloupce pomocí CASE + SUM</li>
+<li>Hromadný INSERT = VALUES (1,'a'),(2,'b'),(3,'c') — místo tisíce dotazů</li>
+</ul></div>
+
+<h2>Převody datových typů — CAST a CONVERT</h2>
+<p>V databázi nelze matematicky sečíst slovo a číslo. Při importu dat ze starých systémů bývá cena uložena jako text (VARCHAR). <code>CAST</code> nebo <code>CONVERT</code> řeknou databázi: <span class="hl hl-y">„Nyní se na tento text dívej jako na číslo."</span></p>
+<pre><span class="cm">-- CAST: standardní SQL</span>
+<span class="kw">SELECT</span> <span class="fn">CAST</span>(cena_text <span class="kw">AS</span> <span class="kw">DECIMAL</span>(<span class="nm">10</span>,<span class="nm">2</span>)) * <span class="nm">1.21</span> <span class="kw">AS</span> cena_s_dph
+<span class="kw">FROM</span>   Produkty
+
+<span class="cm">-- CONVERT: specifické pro MS SQL (lze zadat formát data)</span>
+<span class="kw">SELECT</span> <span class="fn">CONVERT</span>(<span class="kw">VARCHAR</span>, datum, <span class="nm">104</span>) <span class="kw">AS</span> datum_cz   <span class="cm">-- formát DD.MM.YYYY</span></pre>
+
+<h2>Podmíněná logika — CASE</h2>
+<p>CASE funguje jako <strong>IF-THEN-ELSE</strong> přímo v SQL dotazu. Vytvoří virtuální sloupec s hodnotou podle podmínky.</p>
+
+<p><strong>Jednoduchý CASE</strong> — porovnává přesné hodnoty:</p>
+<pre><span class="kw">SELECT</span> jmeno,
+       <span class="kw">CASE</span> znamka
+           <span class="kw">WHEN</span> <span class="nm">1</span> <span class="kw">THEN</span> <span class="st">'Výborný'</span>
+           <span class="kw">WHEN</span> <span class="nm">2</span> <span class="kw">THEN</span> <span class="st">'Chvalitebný'</span>
+           <span class="kw">ELSE</span> <span class="st">'Dostatečný a níže'</span>
+       <span class="kw">END</span> <span class="kw">AS</span> slovni_hodnoceni
+<span class="kw">FROM</span>   Studenti</pre>
+
+<p><strong>Hledaný CASE</strong> — umožňuje podmínky s operátory:</p>
+<pre><span class="kw">SELECT</span> jmeno, utrata,
+       <span class="kw">CASE</span>
+           <span class="kw">WHEN</span> utrata &gt; <span class="nm">100000</span> <span class="kw">THEN</span> <span class="st">'VIP'</span>
+           <span class="kw">WHEN</span> utrata &gt; <span class="nm">50000</span>  <span class="kw">THEN</span> <span class="st">'Gold'</span>
+           <span class="kw">ELSE</span> <span class="st">'Standard'</span>
+       <span class="kw">END</span> <span class="kw">AS</span> kategorie
+<span class="kw">FROM</span>   Zakaznici</pre>
+
+<h2>Pivotace pomocí CASE — řádky na sloupce</h2>
+<p>Pokud máme prodeje zapsané v řádcích (Leden, Únor, Březen...) a chceme přehled pro vedení, kde každý měsíc je <strong>samostatný sloupec</strong>:</p>
+<pre><span class="kw">SELECT</span>
+    <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> mesic = <span class="st">'Leden'</span>  <span class="kw">THEN</span> cena <span class="kw">ELSE</span> <span class="nm">0</span> <span class="kw">END</span>) <span class="kw">AS</span> Leden,
+    <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> mesic = <span class="st">'Unor'</span>   <span class="kw">THEN</span> cena <span class="kw">ELSE</span> <span class="nm">0</span> <span class="kw">END</span>) <span class="kw">AS</span> Unor,
+    <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> mesic = <span class="st">'Brezen'</span> <span class="kw">THEN</span> cena <span class="kw">ELSE</span> <span class="nm">0</span> <span class="kw">END</span>) <span class="kw">AS</span> Brezen
+<span class="kw">FROM</span> Prodeje</pre>
+
+<h2>Hromadný INSERT — řádkové konstruktory</h2>
+<p>Místo tisíce jednotlivých INSERT příkazů vložíme vše najednou — šetří to výkon databáze:</p>
+<pre><span class="kw">INSERT INTO</span> Produkty (id, nazev, cena) <span class="kw">VALUES</span>
+    (<span class="nm">1</span>, <span class="st">'Notebook'</span>, <span class="nm">25000</span>),
+    (<span class="nm">2</span>, <span class="st">'Myš'</span>,      <span class="nm">500</span>),
+    (<span class="nm">3</span>, <span class="st">'Klávesnice'</span>, <span class="nm">1200</span>)</pre>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Kdy CAST selže?"</strong> — Když text nelze převést na číslo (obsahuje písmena). <code>CAST('abc' AS INT)</code> hodí chybu. V MS SQL lze použít <code>TRY_CAST</code>, který vrátí NULL místo chyby.</li>
+<li><strong>„Jaký je rozdíl jednoduchý vs. hledaný CASE?"</strong> — Jednoduchý: přesná shoda (<code>WHEN hodnota</code>). Hledaný: podmínky s operátory (<code>WHEN x > 100</code>). Hledaný je flexibilnější.</li>
+<li><strong>„Co je pivotace a proč ji neřešit v Excelu?"</strong> — Pivotace v SQL pracuje přímo na serveru nad miliony řádků. Exportovat milion řádků do Excelu jen pro pivot je pomalé a zbytečně zatěžuje síť.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„CASE je naprosto nedocenitelný nástroj pro reporting. Marketingové oddělení chce zákazníky rozdělené podle věku. Bez CASE bychom museli data exportovat do Excelu. Pomocí CASE vytvoříme v SQL dotazu virtuální sloupec: CASE WHEN vek &lt; 18 THEN 'Mládež' WHEN vek BETWEEN 18 AND 65 THEN 'Dospělí' ELSE 'Senioři' END. Databáze to roztřídí za zlomek vteřiny přímo na serveru."</div>
+
+<div class="page-nav">
+<a href="03.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Poddotazy a složené dotazy</span></a>
+<a href="05.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Indexy a rychlost dotazů</span><span>→</span></a>
+</div>
+</div></body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 04 &ndash; Otestování transformační funkce pomocí pytest</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Otestování transformační funkce pomocí pytest</span>
+  <span class="topbar-subject-badge badge-dta">DTA 04</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 04 / 15</div>
+  <h1>Otestování transformační funkce pomocí pytest</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Test = funkce začínající <code>test_</code> v souboru začínajícím <code>test_</code></li>
+<li><code>assert výraz</code> &ndash; projde pokud True, AssertionError pokud False</li>
+<li><code>pytest.raises(ValueError)</code> &ndash; testuj, že nastane výjimka</li>
+<li><code>@pytest.fixture</code> &ndash; sdílený testovací vstup (DataFrame)</li>
+<li><code>@pytest.mark.parametrize</code> &ndash; jeden test, více vstupů</li>
+<li>Spuštění: <code>pytest</code> nebo <code>pytest -v</code> (verbose)</li>
+</ul></div>
+
+<h2>Proč testovat?</h2>
+<p>Test = automatická kontrola „funguje moje funkce správně?". Bez testů zjistíš bug až když selže produkce. S testy ho odchytíš hned při změně kódu &ndash; <strong>regresní testování</strong>.</p>
+
+<h2>Základní test</h2>
+<pre><span class="cm"># test_transformace.py</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> pytest
+<span class="kw">from</span> transformace <span class="kw">import</span> add_vat
+
+<span class="kw">def</span> test_add_vat_basic():
+    df = pd.DataFrame({<span class="st">'cena'</span>: [100, 200, 300]})
+    result = add_vat(df, <span class="st">'cena'</span>)
+    assert result[<span class="st">'cena_s_dph'</span>].iloc[0] == 121.0
+
+<span class="kw">def</span> test_add_vat_raises_on_missing_column():
+    df = pd.DataFrame({<span class="st">'jiny'</span>: [1, 2]})
+    <span class="kw">with</span> pytest.raises(KeyError):
+        add_vat(df, <span class="st">'cena'</span>)</pre>
+
+<h2>Fixture &ndash; sdílená testovací data</h2>
+<pre><span class="kw">@pytest.fixture</span>
+<span class="kw">def</span> sample_df():
+    <span class="kw">return</span> pd.DataFrame({
+        <span class="st">'cena'</span>: [100, 200, <span class="kw">None</span>],
+        <span class="st">'kat'</span>: [<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A'</span>]
+    })
+
+<span class="kw">def</span> test_no_nulls(sample_df):
+    result = clean_nulls(sample_df)
+    assert result.isnull().sum().sum() == 0</pre>
+
+<h2>Parametrize &ndash; více vstupů najednou</h2>
+<pre><span class="kw">@pytest.mark.parametrize</span>(<span class="st">"cena, expected"</span>, [
+    (100, 121.0),
+    (200, 242.0),
+    (0, 0.0),
+])
+<span class="kw">def</span> test_vat(cena, expected):
+    df = pd.DataFrame({<span class="st">'cena'</span>: [cena]})
+    assert add_vat(df, <span class="st">'cena'</span>)[<span class="st">'cena_s_dph'</span>].iloc[0] == expected</pre>
+
+<h2>Spuštění</h2>
+<pre>pytest              <span class="cm"># všechny testy</span>
+pytest -v           <span class="cm"># verbose &ndash; jméno každého testu</span>
+pytest -k "test_vat" <span class="cm"># jen testy s "test_vat" v názvu</span></pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč název souboru musí začínat test_?</strong> &ndash; pytest automaticky hledá soubory podle vzoru <code>test_*.py</code> nebo <code>*_test.py</code>. Jinak soubor ignoruje.</li>
+<li><strong>Rozdíl unit test vs integrační test?</strong> &ndash; Unit test testuje jednu izolovanou funkci s umělými daty. Integrační test testuje spolupráci více komponent (načtení z DB + transformace + export).</li>
+<li><strong>Proč nepoužít jen print() pro kontrolu?</strong> &ndash; print() je manuální &ndash; musíš sám přečíst výstup. assert je automatický &ndash; pytest vypíše PASSED/FAILED a ukáže přesně, co neodpovídalo.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Základ: klíčové slovo <code>assert</code> a konvence pojmenování. Test musí být funkce začínající <code>test_</code> v souboru začínajícím <code>test_</code>. Testovací DataFrame dělám co nejjednodušší &ndash; s hodnotou 100, aby DPH (121) šlo ověřit z hlavy bez kalkulačky.</div>
+
+<div class="page-nav"><a href="03.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Spuštění dockerizované databáze a extrakce dat</span></a><a href="05.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Statická analýza a lintování kódu</span><span>&rarr;</span></a></div>
+</div></body></html>

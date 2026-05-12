@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 19 – Internet věcí (IoT) – zařízení a technologie</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Internet věcí (IoT) – zařízení a technologie</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 19</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 19 / 24</div>
+  <h1>Internet věcí (IoT) – zařízení a technologie</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>IoT = senzory + software + konektivita → automatický sběr dat</li><li>Arduino = mikrokontrolér (jedna smyčka, žádný OS)</li><li>ESP8266/ESP32 = Arduino + Wi-Fi/Bluetooth</li><li>Raspberry Pi = miniaturní počítač (Linux, databáze, webserver)</li><li>MQTT = Publisher/Subscriber protokol pro IoT</li><li>LoRaWAN = 15 km dosah, 10 let baterie, SmartCity</li></ul></div>
+<h2>Co je IoT</h2>
+<p>IoT (Internet of Things) = síť fyzických zařízení vybavených senzory, softwarem a síťovou konektivitou. Tato zařízení sbírají data z okolí a odesílají je na internet k analýze <span class="hl hl-y">bez nutnosti zásahu člověka</span>.</p>
+
+<h2>Platformy — Arduino vs. ESP vs. Raspberry Pi</h2>
+<div class="table-wrap"><table>
+<tr><th>Platforma</th><th>Typ</th><th>OS</th><th>Wi-Fi</th><th>Ideální pro</th></tr>
+<tr><td><strong>Arduino</strong></td><td>Mikrokontrolér</td><td>Ne (jedna smyčka)</td><td>Ne</td><td>Jednoduché senzory, spolehlivý real-time</td></tr>
+<tr><td><strong>ESP8266 / ESP32</strong></td><td>Mikrokontrolér</td><td>Ne</td><td>✅ Ano</td><td>IoT projekty s Wi-Fi, za pár korun</td></tr>
+<tr><td><strong>Raspberry Pi</strong></td><td>Mikropočítač</td><td>✅ Linux</td><td>✅ Ano</td><td>Centrální hub, webserver, databáze</td></tr>
+</table></div>
+
+<div class="box box-b"><strong>Kdy použít co:</strong>
+Měřit teplotu v pokoji → ESP8266 (levný, Wi-Fi, šetří baterii). Centrální server sbírající data ze 100 senzorů a zobrazující grafy → Raspberry Pi. Zapínat/vypínat motor přesně 30× za sekundu → Arduino (deterministický real-time).</div>
+
+<h2>IoT aplikace</h2>
+<div class="def-grid">
+<div class="def-t">IIoT (Průmysl)</div><div class="def-d">Senzory na strojích hlídají vibrace/teplotu. Prediktivní údržba — zavolají technika dřív, než stroj selže.</div>
+<div class="def-t">SmartHome</div><div class="def-d">Automatizace topení, světel, zámků. Hlasový asistent (Alexa, Google Home).</div>
+<div class="def-t">SmartCities</div><div class="def-d">Chytré popelnice hlásí naplnění. Semafory se přizpůsobují provozu. Pouliční osvětlení svítí jen při přítomnosti aut.</div>
+</div>
+
+<h2>Komunikační protokoly IoT</h2>
+<div class="def-grid">
+<div class="def-t">MQTT</div><div class="def-d">Hlavní IoT protokol. Publisher/Subscriber přes Broker. Lehký — pošle jen pár bajtů. Senzor pošle teplotu do brokeru, broker ji rozešle všem odběratelům.</div>
+<div class="def-t">Wi-Fi</div><div class="def-d">Rychlá, ale velká spotřeba energie. Jen pro zásuvkové IoT zařízení doma.</div>
+<div class="def-t">Zigbee / Z-Wave</div><div class="def-d">MESH síť — každé zařízení předává signál dál. Chytrá domácnost (žárovky, zásuvky).</div>
+<div class="def-t">LoRaWAN / Sigfox</div><div class="def-d">Dosah 15 km, baterie 10 let, přenáší jen několik bajtů. SmartCities — senzory na polích, sněhoměry v horách.</div>
+</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč ESP32 místo Arduino pro IoT?"</strong> — ESP32 má zabudovanou Wi-Fi a Bluetooth. Arduino bez shield modulu Wi-Fi nemá. ESP32 je navíc výkonnější a levnější.</li>
+<li><strong>„Proč Raspberry Pi není vhodné na triviální senzory?"</strong> — Raspberry Pi má Linux, který může zamrznout nebo se pokazit při nečekaném odpojení napájení (není to problém u Arduina/ESP). Pro jednoduché senzory je to jako jezdit kamionem pro rohlíky.</li>
+<li><strong>„Co je MQTT broker?"</strong> — Centrální zprostředkovatel zpráv. Senzory „publikují" (publish) zprávy do brokeru. Aplikace se „přihlásí k odběru" (subscribe) konkrétního tématu. Broker doručí zprávu všem odběratelům. Populární broker: Mosquitto.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Při výběru platformy studenti chybují — myslí si, čím výkonnější, tím lepší. Koupí Raspberry Pi jen na měření teploty. Raspberry Pi má Linux, který se může pokazit při náhlém výpadku napájení. Na jednoduchý senzor stačí ESP8266 za 100 Kč — zapne se za milisekundu, změří teplotu, pošle přes Wi-Fi, uspí se. Raspberry Pi přijde na řadu, až když data sbíráme a vyhodnocujeme."</div>
+<div class="page-nav"><a href="18.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>VR, AR a Unity</span></a><a href="20.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Elektrotechnika</span><span>→</span></a></div>
+</div></body></html>

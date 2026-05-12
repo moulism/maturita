@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 02 – Skupinové dotazy (GROUP BY, HAVING, agregace)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Skupinové dotazy (GROUP BY, HAVING, agregace)</span>
+  <span class="topbar-subject-badge badge-dab">DAB 02</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 02 / 7</div>
+  <h1>Skupinové dotazy – GROUP BY, HAVING, agregace</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>GROUP BY = rozřaď data do skupin (hromádek)</li>
+<li>Agregace: SUM, COUNT, AVG, MIN, MAX</li>
+<li>WHERE filtruje PŘED seskupením (surové řádky)</li>
+<li>HAVING filtruje PO seskupení (výsledné skupiny)</li>
+<li>WHERE ≠ může mít agregaci | HAVING ✓ může mít agregaci</li>
+</ul></div>
+
+<h2>Smysl GROUP BY — proč seskupujeme</h2>
+<p>V databázi máme statisíce řádků, ale ředitel firmy nechce číst každý jednotlivý nákup. Chce vidět <strong>souhrn</strong>. Příkaz <code>GROUP BY</code> vezme surová data a „<span class="hl hl-y">roztřídí je na hromádky</span>" podle určitého klíče (např. oddělení, pobočky nebo měsíce). Z deseti tisíc faktur tak vytvoří jeden přehledný report.</p>
+<pre><span class="kw">SELECT</span>   oddeleni, <span class="fn">SUM</span>(trzby) <span class="kw">AS</span> celkove_trzby
+<span class="kw">FROM</span>     Faktury
+<span class="kw">GROUP BY</span> oddeleni
+<span class="kw">ORDER BY</span> celkove_trzby <span class="kw">DESC</span></pre>
+
+<h2>Agregační funkce</h2>
+<div class="table-wrap"><table>
+<tr><th>Funkce</th><th>Co dělá</th><th>Business příklad</th></tr>
+<tr><td><code>SUM()</code></td><td>Sečte hodnoty</td><td>Celkové tržby podle oddělení</td></tr>
+<tr><td><code>COUNT()</code></td><td>Spočítá počet řádků</td><td>Kolik objednávek má daný zákazník</td></tr>
+<tr><td><code>AVG()</code></td><td>Průměr</td><td>Průměrná délka vyřízení objednávky</td></tr>
+<tr><td><code>MAX()</code></td><td>Nejvyšší hodnota</td><td>Nejvyšší zaplacená faktura za měsíc</td></tr>
+<tr><td><code>MIN()</code></td><td>Nejnižší hodnota</td><td>Nejlevnější produkt v kategorii</td></tr>
+</table></div>
+
+<h2>Rozdíl WHERE vs. HAVING — nejdůležitější chyták!</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>WHERE</th><th>HAVING</th></tr>
+<tr><td><strong>Kdy filtruje</strong></td><td><span class="hl hl-b">PŘED</span> seskupením (surové řádky)</td><td><span class="hl hl-g">PO</span> seskupení (hotové skupiny)</td></tr>
+<tr><td><strong>Může mít agregaci?</strong></td><td>❌ Ne (WHERE SUM(...) je chyba!)</td><td>✅ Ano (HAVING SUM(cena) > 100)</td></tr>
+<tr><td><strong>Příklad</strong></td><td>Ignoruj vrácené objednávky</td><td>Zobraz zákazníky s útratou > 10 000 Kč</td></tr>
+</table></div>
+
+<pre><span class="kw">SELECT</span>   zakaznik, <span class="fn">SUM</span>(cena) <span class="kw">AS</span> celkem
+<span class="kw">FROM</span>     Objednavky
+<span class="kw">WHERE</span>    stav != <span class="st">'Stornováno'</span>      <span class="cm">-- filtruj PŘED seskupením</span>
+<span class="kw">GROUP BY</span> zakaznik
+<span class="kw">HAVING</span>   <span class="fn">SUM</span>(cena) &gt; <span class="nm">10000</span>          <span class="cm">-- filtruj PO seskupení</span></pre>
+
+<h2>GROUP BY se spojením tabulek</h2>
+<p>Pokud chci vědět tržby podle kategorie produktů, data leží ve dvou tabulkách. Nejdřív musím spojit tabulky JOINem, pak teprve GROUP BY:</p>
+<pre><span class="kw">SELECT</span>   p.kategorie, <span class="fn">COUNT</span>(o.id) <span class="kw">AS</span> pocet_prodanych
+<span class="kw">FROM</span>     Objednavky o
+<span class="kw">JOIN</span>     Produkty p <span class="kw">ON</span> o.produkt_id = p.id
+<span class="kw">GROUP BY</span> p.kategorie</pre>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Napište dotaz: zákazníci s útratou nad 10 000 Kč"</strong> — Musí být HAVING, ne WHERE! WHERE SUM(cena) > 10000 je syntaktická chyba.</li>
+<li><strong>„Proč WHERE nesmí obsahovat agregaci?"</strong> — Protože WHERE běží PŘED GROUP BY. V tu chvíli ještě žádné součty neexistují, databáze ještě neseskupila data.</li>
+<li><strong>„Co vrátí COUNT(*) vs COUNT(sloupec)?"</strong> — COUNT(*) spočítá všechny řádky včetně NULL. COUNT(sloupec) spočítá jen řádky, kde daný sloupec NENÍ NULL.</li>
+<li><strong>„Musíme GROUP BY vždy použít s agregací?"</strong> — Ne vždy povinně, ale bez agregace GROUP BY jen vrátí unikátní hodnoty (podobně jako DISTINCT).</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Častou chybou při reportingu je použití WHERE tam, kde má být HAVING. Ředitel chce seznam prodejců nad cíl 100 000 Kč. Pokud napíšeme WHERE cena_objednavky > 100 000, databáze najde jen faktury samotné nad 100 tisíc. Prodejce, který prodal tisíc drobností za stovku, by vypadl. Správně: GROUP BY prodejce, SUM(cena), a teprve HAVING SUM(cena) > 100000."</div>
+
+<div class="page-nav">
+<a href="01.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Úvod do SQL a základní příkazy</span></a>
+<a href="03.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Poddotazy a složené dotazy</span><span>→</span></a>
+</div>
+</div></body></html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 20 – Elektrotechnika – základní pojmy a součástky</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Elektrotechnika – základní pojmy a součástky</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 20</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 20 / 24</div>
+  <h1>Elektrotechnika – základní pojmy a součástky</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Ohmův zákon: I = U/R (proud = napětí / odpor)</li><li>U = Volt (Voltmetr paralelně) | I = Ampér (Ampérmetr sériově) | R = Ohm</li><li>Dioda = jednosměrný ventil | Tranzistor = zesilovač nebo elektronický vypínač</li><li>LED musí mít ochranný rezistor (bez něj shoří!)</li><li>Sériový obvod: proud stejný | Paralelní: napětí stejné</li></ul></div>
+<h2>Základní elektrické veličiny — Ohmův zákon</h2>
+<div class="table-wrap"><table>
+<tr><th>Veličina</th><th>Symbol</th><th>Jednotka</th><th>Co je</th><th>Jak měříme</th></tr>
+<tr><td><strong>Napětí</strong></td><td>U</td><td>Volt (V)</td><td>„Tlak" tlačící elektrony</td><td>Voltmetr <strong>paralelně</strong></td></tr>
+<tr><td><strong>Proud</strong></td><td>I</td><td>Ampér (A)</td><td>Množství elektronů za sekundu</td><td>Ampérmetr <strong>sériově</strong> (do cesty)</td></tr>
+<tr><td><strong>Odpor</strong></td><td>R</td><td>Ohm (Ω)</td><td>Překážka proudu (mění energii na teplo)</td><td>Ohmetr <strong>bez napájení!</strong></td></tr>
+</table></div>
+
+<div class="box box-y"><strong>Ohmův zákon:</strong> <code>I = U / R</code> nebo <code>U = I × R</code> nebo <code>R = U / I</code><br>
+Příklad: 9V baterie, odpor 1000 Ω → I = 9/1000 = 0,009 A = 9 mA</div>
+
+<h2>Pasivní součástky</h2>
+<div class="def-grid">
+<div class="def-t">Rezistor</div><div class="def-d">Omezuje proud. Mění elektrickou energii na teplo. Chrání citlivé součástky (LED).</div>
+<div class="def-t">Kondenzátor</div><div class="def-d">Ukládá elektrický náboj. Dvě desky s izolantem. Použití: filtrace šumu napájení, vyhlazení napětí.</div>
+<div class="def-t">Cívka (Induktor)</div><div class="def-d">Namotaný drát. Hromadí energii v magnetickém poli. Tlumí rychlé změny proudu.</div>
+</div>
+
+<h2>Polovodičové součástky</h2>
+<div class="def-grid">
+<div class="def-t">Dioda</div><div class="def-d"><strong>Jednosměrný ventil.</strong> Propouští proud jen jedním směrem. LED = Light Emitting Diode (září při průchodu proudu).</div>
+<div class="def-t">Tranzistor</div><div class="def-d"><strong>Nejgeniálnější součástka!</strong> 3 nožičky (Báze, Kolektor, Emitor). Funguje jako: (1) <em>Zesilovač</em> — z malého signálu udělá velký. (2) <em>Elektronický vypínač</em> — malý proud do Báze otevře velký proud Kolektorem.</div>
+</div>
+
+<h2>Základní obvody</h2>
+<div class="box box-r"><strong>LED MUSÍ mít ochranný rezistor!</strong>
+LED při dosažení prahového napětí má téměř nulový odpor → do ní natekl obrovský proud → okamžitě shoří. Rezistor v sérii omezí proud na bezpečných 10–20 mA.</div>
+
+<div class="table-wrap"><table>
+<tr><th>Zapojení</th><th>Proud</th><th>Napětí</th><th>Příklad</th></tr>
+<tr><td><strong>Sériové</strong></td><td>Všude stejný</td><td>Sčítá se na součástkách</td><td>Staré vánoční řetězy (jedna prasklá = nesvítí)</td></tr>
+<tr><td><strong>Paralelní</strong></td><td>Dělí se do větví</td><td>Všude stejné</td><td>Domácí zásuvky (vypnu světlo v kuchyni, v obývaku svítí)</td></tr>
+</table></div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jak změřit odpor?"</strong> — Ohmetr musí být připojen BEZ napájení! Pokud teče proud, ohmetr naměří jiný odpor než skutečný.</li>
+<li><strong>„Proč LED bez rezistoru shoří?"</strong> — Ohmův zákon: při nízkém odporu teče velký proud. LED má práhové napětí a pak téměř nulový odpor. Arduino může dodat max. 40 mA → LED potřebuje 10–20 mA → rezistor sníží proud na bezpečnou úroveň.</li>
+<li><strong>„Jak funguje tranzistor jako vypínač?"</strong> — Arduino pošle slabý proud (5 mA) do báze tranzistoru. Tranzistor se „otevře" jako ventil a pustí silný proud (stovky mA) Kolektorem k motoru nebo relé. Arduino tak ovládá silné spotřebiče.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Ohmův zákon v praxi: koupím 5V LED k Arduinu. Připojím přímo na pin. Arduino se zničí. Proč? LED má při provozu téměř nulový odpor. Z Ohmova zákona: I = U/R = 5/0 = nekonečno. Pin Arduina unese max. 40 mA → okamžitě shořel. Ochranný rezistor 220 Ω: I = 5/220 = 23 mA — bezpečné."</div>
+<div class="page-nav"><a href="19.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>IoT</span></a><a href="21.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Periferní zařízení IoT</span><span>→</span></a></div>
+</div></body></html>

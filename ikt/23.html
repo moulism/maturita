@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 23 – Přenosové sítě, protokoly a sběrnice pro IoT</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Přenosové sítě, protokoly a sběrnice pro IoT</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 23</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 23 / 24</div>
+  <h1>Přenosové sítě, protokoly a sběrnice pro IoT</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Wi-Fi = velká spotřeba | BLE = malá spotřeba (hodiny) | Zigbee = MESH domácnost</li><li>LoRaWAN/Sigfox = 15 km, 10 let baterie, jen pár bajtů — SmartCity</li><li>HTTP = Request-Response, těžkopádný pro IoT</li><li>MQTT = Publisher/Subscriber přes Broker, lehký a efektivní</li><li>I2C = 2 dráty, 127 zařízení | SPI = rychlejší, více drátů | UART = 2 dráty, sériová linka</li></ul></div>
+<h2>Přenosové sítě pro IoT</h2>
+<div class="table-wrap"><table>
+<tr><th>Síť</th><th>Dosah</th><th>Spotřeba</th><th>Datový tok</th><th>Použití</th></tr>
+<tr><td><strong>Wi-Fi</strong></td><td>50 m</td><td>Vysoká</td><td>Vysoký</td><td>Domácí IoT napájené ze zásuvky</td></tr>
+<tr><td><strong>BLE (Bluetooth LE)</strong></td><td>10 m</td><td>Velmi nízká</td><td>Nízký</td><td>Chytré hodinky, senzory na baterie</td></tr>
+<tr><td><strong>Zigbee / Z-Wave</strong></td><td>50 m (MESH)</td><td>Velmi nízká</td><td>Nízký</td><td>SmartHome (žárovky, zásuvky, senzory)</td></tr>
+<tr><td><strong>LoRaWAN</strong></td><td>15 km</td><td>Extrémně nízká (10 let baterie)</td><td>Minimální (pár bajtů)</td><td>SmartCity, zemědělství, smart sněhoměry</td></tr>
+<tr><td><strong>Sigfox</strong></td><td>50 km</td><td>Extrémně nízká</td><td>Minimální</td><td>Globální IoT sledování</td></tr>
+</table></div>
+
+<h2>Protokoly — HTTP vs. MQTT</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>HTTP</th><th>MQTT</th></tr>
+<tr><td><strong>Model</strong></td><td>Request-Response</td><td>Publisher / Subscriber</td></tr>
+<tr><td><strong>Kdo iniciuje</strong></td><td>Klient musí sám dotazovat server</td><td>Server (broker) pošle zprávu při změně</td></tr>
+<tr><td><strong>Velikost zprávy</strong></td><td>Velká (HTTP hlavičky)</td><td>Minimální (2 bajty overhead)</td></tr>
+<tr><td><strong>Spotřeba</strong></td><td>Vysoká (neustálé dotazování)</td><td>Nízká (čeká na zprávu)</td></tr>
+<tr><td><strong>Použití</strong></td><td>Webové stránky, REST API</td><td>IoT, reálný čas</td></tr>
+</table></div>
+
+<h2>Jak MQTT funguje</h2>
+<div class="box box-b"><strong>Publisher → Broker → Subscriber</strong><br>
+Senzor: <em>„Publikuji: téma 'Dum/Teplota' = 22°C"</em> → Broker<br>
+Aplikace se přihlásí k odběru tématu 'Dum/Teplota'<br>
+Při každé nové hodnotě Broker okamžitě rozešle zprávu všem odběratelům<br>
+Mobilní telefon, Grafana, domácí server — vše dostane update zároveň</div>
+
+<h2>Sběrnice — komunikace na desce</h2>
+<div class="def-grid">
+<div class="def-t">UART</div><div class="def-d">Sériová linka. 2 piny (RX přijímač, TX vysílač). Nutná dohodnutá rychlost (Baud rate). GPS moduly, programování desek.</div>
+<div class="def-t">I2C</div><div class="def-d">2 dráty (SDA data, SCL hodiny). Master/Slave s adresami. Na 2 dráty lze připojit 127 senzorů! Displeje, senzory.</div>
+<div class="def-t">SPI</div><div class="def-d">Rychlejší než I2C. Více drátů (MOSI, MISO, SCK, CS). SD karty, displeje s rychlou grafiku.</div>
+<div class="def-t">OneWire</div><div class="def-d">Jeden drát pro data i napájení (parazitní napájení). Typicky Dallas teplotní senzory (DS18B20).</div>
+</table></div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč MQTT místo HTTP v IoT?"</strong> — HTTP: mobil musí každou vteřinu dotazovat server (polling) — zbytečná zátěž sítě a baterie. MQTT: mobil se přihlásí k odběru a server pošle data sám, jakmile se změní. Efektivnější, šetří baterii i síť.</li>
+<li><strong>„Co je MESH síť Zigbee?"</strong> — Každé Zigbee zařízení může fungovat jako router a přeposílat zprávy dalším zařízením. Pokud jedna žárovka ztratí signál, zpráva se „obejde" přes jinou žárovku. Velmi robustní pro domácí automatizaci.</li>
+<li><strong>„Kdy LoRaWAN vs. Wi-Fi?"</strong> — LoRaWAN: senzor na poli 10 km od civilizace, měřící půdní vlhkost s 10letou baterií → posílá jen číslo jednou za hodinu. Wi-Fi: IP kamera v domě přenášející video → potřebuje vysoký datový tok a napájení ze zásuvky.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„MQTT vs. HTTP: kdybychom měli teplotní senzor s HTTP, mobil by se musel serveru neustále ptát 'Změnila se teplota? Změnila se?' každou vteřinu. U MQTT se mobil jednou přihlásí k odběru tématu. Až senzor naměří novou hodnotu, broker ji sám rozešle všem odběratelům. Šetří baterii i šířku pásma sítě."</div>
+<div class="page-nav"><a href="22.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>IoT data a vizualizace</span></a><a href="24.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Programování IoT</span><span>→</span></a></div>
+</div></body></html>

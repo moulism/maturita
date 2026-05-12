@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 08 – SŘBD – Systém řízení báze dat</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">SŘBD – Systém řízení báze dat</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 08</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 08 / 24</div>
+  <h1>SŘBD – Systém řízení báze dat</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Data = surová fakta | Informace = data v kontextu</li><li>SŘBD = software pro přístup k databázi (skladník ke skladu)</li><li>Úkoly SŘBD: souběžný přístup, práva, logy, překlad SQL</li><li>3 vrstvy: Pohledová (co vidí uživatel) → Logická (tabulky) → Fyzická (disk)</li><li>Relační vs. NoSQL: ACID vs. škálovatelnost</li><li>Redundance → nekonzistence → nedůvěryhodná data</li></ul></div>
+<h2>Data, informace, databáze</h2>
+<div class="def-grid">
+<div class="def-t">Data</div><div class="def-d">Syrová fakta bez kontextu. Číslo "10" samo o sobě nic neznamená.</div>
+<div class="def-t">Informace</div><div class="def-d">Data v kontextu: "Dnes je 10 °C" nebo "Zákazník Novák nezaplatil."</div>
+<div class="def-t">Databáze</div><div class="def-d">Systematicky uspořádaná hromada dat uložená na disku počítače.</div>
+<div class="def-t">SŘBD</div><div class="def-d">Software, přes který se k datům dostáváme. Databáze = sklad, SŘBD = skladník.</div>
+</div>
+
+<h2>Úkoly SŘBD</h2>
+<ul>
+<li><strong>Souběžný přístup (locking):</strong> Tisíc uživatelů nesmí přepisovat jeden záznam ve stejnou milisekundu.</li>
+<li><strong>Bezpečnost:</strong> Definuje uživatelská práva (kdo může číst, kdo mazat).</li>
+<li><strong>Logování a zálohování:</strong> Pro případ pádu serveru.</li>
+<li><strong>Překlad SQL dotazů:</strong> Najde nejrychlejší cestu k datům (execution plan).</li>
+</ul>
+
+<h2>Trojvrstvá architektura SŘBD</h2>
+<div class="def-grid">
+<div class="def-t">1. Pohledová vrstva</div><div class="def-d">Co vidí uživatel nebo aplikace. Každý vidí jen data, která smí. Účetní vidí platy, marketér jen jména klientů.</div>
+<div class="def-t">2. Logická vrstva</div><div class="def-d">Definice všech tabulek (Zákazníci, Faktury), sloupců a vazeb (primární/cizí klíče).</div>
+<div class="def-t">3. Fyzická vrstva</div><div class="def-d">Jak jsou jedničky a nuly uloženy na fyzickém disku. Indexy pro rychlé vyhledávání.</div>
+</div>
+
+<h2>Redundance a nekonzistence</h2>
+<p><strong>Redundance</strong> = zbytečné opakování stejných dat. Pokud je adresa zákazníka u každé jeho objednávky, je tam tisíckrát.</p>
+<p><strong>Nekonzistence</strong> = přímý důsledek redundance. Zákazník se přestěhuje, změním adresu u jedné objednávky, u ostatních zůstane stará. Data si odporují.</p>
+
+<h2>Relační vs. NoSQL databáze</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Relační (SQL)</th><th>NoSQL</th></tr>
+<tr><td><strong>Struktura</strong></td><td>Tabulky, řádky, sloupce</td><td>Dokumenty, grafy, klíč-hodnota</td></tr>
+<tr><td><strong>Konzistence</strong></td><td>ACID — absolutní bezpečí dat</td><td>Eventual consistency — méně striktní</td></tr>
+<tr><td><strong>Škálovatelnost</strong></td><td>Vertikální (silnější server)</td><td>Horizontální (přidat servery)</td></tr>
+<tr><td><strong>Příklady</strong></td><td>MS SQL, Oracle, MySQL, PostgreSQL</td><td>MongoDB, Redis, Cassandra</td></tr>
+<tr><td><strong>Vhodné pro</strong></td><td>Banky, e-shopy, ERP systémy</td><td>Sociální sítě, online hry, IoT</td></tr>
+</table></div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Co jsou ACID vlastnosti?"</strong> — Atomicity (transakce celá nebo vůbec), Consistency (data splňují pravidla), Isolation (transakce se neovlivňují), Durability (potvrzená data jsou trvalá). Základní záruky relačních DB.</li>
+<li><strong>„Proč NoSQL pro sociální sítě?"</strong> — Miliony připojení, nestrukturovaná data (příspěvky, fotky), horizontální škálovatelnost. Relační DB by se zhroutila pod takovým náporem zápisů.</li>
+<li><strong>„Co se stane bez SŘBD?"</strong> — Dva uživatelé přečtou „Na skladě: 1", oba koupí → sklad jde do mínusu. SŘBD zamkne řádek pro první transakci, druhá čeká.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„SŘBD řeší souběžný přístup pomocí zámků. E-shop, poslední iPhone, dva zákazníci kliknou současně. Bez SŘBD: oba přečtou 'sklad: 1', oba dostanou produkt → sklad v mínusu. SŘBD zamkne řádek v milisekundě pro prvního zákazníka, druhý čeká. Po potvrzení prvního zákazníka druhý dostane 'Vyprodáno'."</div>
+<div class="page-nav"><a href="07.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Datové formáty</span></a><a href="09.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Datové modelování</span><span>→</span></a></div>
+</div></body></html>

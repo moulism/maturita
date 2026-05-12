@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 16 – 3D grafika – principy, kartézský systém, SW, formáty</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">3D grafika – principy, kartézský systém, SW, formáty</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 16</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 16 / 24</div>
+  <h1>3D grafika – principy, kartézský systém, SW, formáty</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>3D = matematická iluze, rendering = výpočet 2D obrazu z 3D scény</li><li>Kartézský systém: osy X (šířka), Y (výška), Z (hloubka), Origin = [0,0,0]</li><li>Vektor = tvar modelu (matematika) | Bitmapa = textury (pixely)</li><li>Blender (free), 3DS MAX/Maya (hry/filmy), AutoCAD/SolidWorks (inženýrství)</li><li>Formáty: .OBJ (geometrie), .FBX (animace, herní enginy), .STL (3D tisk)</li></ul></div>
+<h2>Podstata a princip 3D grafiky</h2>
+<p>Ve 3D grafice ve skutečnosti <span class="hl hl-y">nic trojrozměrného neexistuje</span> — je to matematická iluze. Principem je vytvoření matematického modelu scény (objekty, světla, kamera). Počítač provede <strong>rendering</strong> — spočítá, jak by se od objektů odrazilo světlo, a vygeneruje plochý 2D obrázek pro náš plochý monitor.</p>
+
+<h2>Kartézský souřadnicový systém pro 3D</h2>
+<div class="def-grid">
+<div class="def-t">Osy</div><div class="def-d">X = šířka, Y = výška, Z = hloubka. Všechny tři jsou na sebe kolmé.</div>
+<div class="def-t">Origin</div><div class="def-d">Počátek [0, 0, 0] — průsečík všech tří os. Každý bod objektu je definován třemi souřadnicemi.</div>
+</div>
+
+<h2>Vektor vs. Bitmapa v 3D</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Vektorová</th><th>Bitmapová</th></tr>
+<tr><td><strong>Ve 3D použití</strong></td><td>Samotný tvar 3D modelu (polygony, křivky)</td><td>Textury — „kůže" objektu</td></tr>
+<tr><td><strong>Výhoda</strong></td><td>Zvětšení bez pixelizace</td><td>Fotorealistický povrch</td></tr>
+<tr><td><strong>Příklad</strong></td><td>Síť polygonů tvořící auto</td><td>Bitmapový obrázek dřeva „obalující" vektorový stůl</td></tr>
+</table></div>
+
+<h2>3D Software — přehled</h2>
+<div class="table-wrap"><table>
+<tr><th>SW</th><th>Cena</th><th>Typické použití</th></tr>
+<tr><td><strong>Blender</strong></td><td>Zdarma (open-source)</td><td>Animace, hry, VFX, architektura</td></tr>
+<tr><td><strong>3DS MAX / Maya</strong></td><td>Licence (~3000 $/rok)</td><td>AAA hry, Hollywoodské filmy</td></tr>
+<tr><td><strong>AutoCAD</strong></td><td>Licence</td><td>Architektura, strojírenství, přesné výkresy</td></tr>
+<tr><td><strong>SolidWorks</strong></td><td>Licence</td><td>Průmyslový design, CAD pro výrobu</td></tr>
+<tr><td><strong>ZBrush</strong></td><td>Licence</td><td>Digitální sochařství — organické tvary, postavy</td></tr>
+</table></div>
+
+<h2>3D Formáty souborů</h2>
+<div class="def-grid">
+<div class="def-t">.OBJ</div><div class="def-d">Základní universální formát. Přenáší jen geometrii modelu bez animací.</div>
+<div class="def-t">.FBX</div><div class="def-d">Nejpoužívanější pro herní enginy (Unity, Unreal). Přenese model i s animacemi.</div>
+<div class="def-t">.STL</div><div class="def-d">Standard pro 3D tiskárny. Jen povrchová geometrie, žádné textury.</div>
+<div class="def-t">.BLEND</div><div class="def-d">Nativní formát Blenderu. Celá scéna (objekty, světla, materiály).</div>
+<div class="def-t">.STEP / .IGES</div><div class="def-d">CAD formáty pro inženýrství. Matematicky přesné plochy.</div>
+</div>
+
+<h2>Praktické využití 3D grafiky</h2>
+<ul>
+<li><strong>Filmy:</strong> CGI efekty (Marvel, Pixar animace)</li>
+<li><strong>Hry:</strong> Herní modely postav, prostředí</li>
+<li><strong>Architektura:</strong> Vizualizace domů před výstavbou</li>
+<li><strong>Průmysl:</strong> Prototypování dílů — 3D tisk z SolidWorks modelu</li>
+<li><strong>Medicína:</strong> 3D modely orgánů z CT/MRI skenů</li>
+</ul>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jaký je rozdíl 3D CAD vs. 3D pro hry?"</strong> — CAD (AutoCAD/SolidWorks): matematicky přesné rozměry na mikrometry, musí fungovat v realitě. Herní 3D (3DS MAX/Blender): vizuálně uvěřitelné, co nejméně polygonů, nefunkční části (motor pod kapotou auta) se nedělají.</li>
+<li><strong>„Co je rendering?"</strong> — Výpočet 2D obrazu z 3D matematického modelu. Sleduje se, jak paprsky světla odráží od povrchů. Komplexní scény (Pixar film) mohou renderovat hodiny na farmách tisíců serverů.</li>
+<li><strong>„Proč .FBX pro herní enginy?"</strong> — FBX přenáší model i s animacemi (tzv. skeletal animation). OBJ přenáší jen statickou geometrii bez pohybů.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Klíčový rozdíl v přístupu: inženýr v CADu modeluje auto pro Škodu s přesností na mikrometry — motor musí v realitě fungovat. Herní vývojář v 3DS MAX modeluje auto pro hru — nezajímá ho přesnost, zajímá ho počet polygonů. Pod kapotou herního auta není žádný motor. Výsledek musí být vizuálně uvěřitelný, ale co nejlehčí pro grafickou kartu."</div>
+<div class="page-nav"><a href="15.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Video</span></a><a href="17.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>3D terminologie</span><span>→</span></a></div>
+</div></body></html>

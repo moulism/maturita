@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 10 – SQL – DDL (Data Definition Language)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">SQL – DDL (Data Definition Language)</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 10</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 10 / 24</div>
+  <h1>SQL – DDL (Data Definition Language)</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>DDL = definice struktury, nepracuje s daty uvnitř</li><li>CREATE TABLE = vytvoření | ALTER TABLE = změna | DROP = zničení</li><li>DROP smaže vše | TRUNCATE smaže data, zachová strukturu (nelze rollback!)</li><li>Datové typy: INT, DECIMAL(10,2), VARCHAR/NVARCHAR, DATE, DATETIME</li><li>Constraints: PRIMARY KEY, FOREIGN KEY, NOT NULL, UNIQUE, CHECK, DEFAULT</li></ul></div>
+<h2>DDL příkazy a jejich účel</h2>
+<div class="def-grid">
+<div class="def-t">CREATE</div><div class="def-d">Vytvoří databázi, schéma nebo tabulku. <code>CREATE TABLE Studenti (ID INT, Jmeno NVARCHAR(50))</code></div>
+<div class="def-t">ALTER TABLE</div><div class="def-d">Změní strukturu tabulky. <code>ALTER TABLE Studenti ADD Telefon NVARCHAR(20)</code> nebo <code>DROP COLUMN Telefon</code></div>
+<div class="def-t">DROP</div><div class="def-d"><strong>Zničí objekt kompletně</strong> — tabulka + data zmizí z disku. Nelze vrátit!</div>
+<div class="def-t">TRUNCATE</div><div class="def-d">Agresivní vyprázdnění dat. Bleskově smaže všechna data a resetuje auto-increment. Struktura tabulky zůstane. <strong>Nelze vrátit (ROLLBACK)!</strong></div>
+</div>
+
+<div class="box box-r"><strong>DROP vs. TRUNCATE vs. DELETE — kritický rozdíl!</strong>
+<ul>
+<li><code>DROP TABLE</code> = zbourá celou tabulku i se strukturou (nevratné)</li>
+<li><code>TRUNCATE TABLE</code> = smaže všechna data, zachová strukturu, resetuje IDčka, nelze rollback, velmi rychlé</li>
+<li><code>DELETE FROM</code> (DML!) = maže řádek po řádku, loguje každé smazání, pomalé na velkých tabulkách, <em>lze rollback</em></li>
+</ul></div>
+
+<h2>Datové typy v MS SQL</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Popis</th><th>Příklad použití</th></tr>
+<tr><td><code>INT</code></td><td>Celé číslo</td><td>ID, počet kusů</td></tr>
+<tr><td><code>DECIMAL(10,2)</code></td><td>Desetinné číslo s přesnou hodnotou</td><td>Cena (10 číslic, 2 za desetinnou)</td></tr>
+<tr><td><code>VARCHAR(50)</code></td><td>Text proměnlivé délky</td><td>Jméno, e-mail (jen ASCII)</td></tr>
+<tr><td><code>NVARCHAR(50)</code></td><td>Unicode text</td><td>Česká diakritika, asijská písma</td></tr>
+<tr><td><code>DATE</code></td><td>Datum bez času</td><td>Datum objednávky</td></tr>
+<tr><td><code>DATETIME</code></td><td>Datum + čas</td><td>Přesný časový razítko transakce</td></tr>
+</table></div>
+
+<h2>Constraints — omezení sloupců</h2>
+<pre><span class="kw">CREATE TABLE</span> Zakaznici (
+    ID         <span class="kw">INT PRIMARY KEY</span>,          <span class="cm">-- jedinečné, NOT NULL</span>
+    Email      <span class="kw">NVARCHAR</span>(<span class="nm">100</span>) <span class="kw">UNIQUE NOT NULL</span>, <span class="cm">-- unikátní</span>
+    Vek        <span class="kw">INT CHECK</span> (Vek &gt;= <span class="nm">18</span>),   <span class="cm">-- podmínka</span>
+    Stav       <span class="kw">NVARCHAR</span>(<span class="nm">20</span>) <span class="kw">DEFAULT</span> <span class="st">'Aktivní'</span>, <span class="cm">-- výchozí hodnota</span>
+    Mesto_ID   <span class="kw">INT FOREIGN KEY REFERENCES</span> Mesta(ID) <span class="cm">-- cizí klíč</span>
+)</pre>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jaký je rozdíl VARCHAR a NVARCHAR?"</strong> — VARCHAR ukládá jen ASCII znaky (bez diakritiky). NVARCHAR ukládá Unicode (čeština, čínština) a zabírá 2× více místa. V ČR vždy NVARCHAR pro text s diakritikou!</li>
+<li><strong>„TRUNCATE vs. DELETE — kdy co použít?"</strong> — TRUNCATE: chci rychle vymazat vše (staging tabulka při ETL). DELETE: chci mazat konkrétní řádky s WHERE, nebo potřebuji zachovat možnost ROLLBACK.</li>
+<li><strong>„Co je FOREIGN KEY constraint?"</strong> — Zabrání vložení objednávky pro zákazníka, který neexistuje. Databáze kontroluje referenční integritu — bez FK by bylo možné mít objednávky pro neexistující zákazníky.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Studenti zaměňují DELETE, DROP a TRUNCATE. DROP smaže strukturu i data — z disku zmizí vše. DELETE maže řádek po řádku a pečlivě loguje — jde rollbackovat, ale je pomalé. TRUNCATE agresivně uřízne datovou část za milisekundu, resetuje IDčka, ale nejde vrátit. To je noční můra juniorních DBA."</div>
+<div class="page-nav"><a href="09.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Datové modelování</span></a><a href="11.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>SQL DML</span><span>→</span></a></div>
+</div></body></html>

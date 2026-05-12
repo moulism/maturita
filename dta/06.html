@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 06 &ndash; Profilace výkonu Python skriptu</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Profilace výkonu Python skriptu</span>
+  <span class="topbar-subject-badge badge-dta">DTA 06</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 06 / 15</div>
+  <h1>Profilace výkonu Python skriptu</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Profilace = zjisti, která část kódu trvá nejdéle (bottleneck)</li>
+<li>Rychlé: <code>import time; start=time.time(); ...; print(time.time()-start)</code></li>
+<li>Profesionální: <code>python -m cProfile -s time skript.py</code> (terminál!)</li>
+<li><code>tottime</code> = čas přímo ve funkci (bez podfunkcí) &ndash; hledej bottleneck zde</li>
+<li><code>ncalls</code> = kolikrát byla funkce zavolána</li>
+</ul></div>
+
+<h2>Proč profilovat?</h2>
+<p>Optimalizuj až po měření. Bez profilace nevíš, co skript zpomaluje. 80 % času bývá stráveno v 20 % kódu (Paretovo pravidlo). cProfile ti přesně ukáže kde.</p>
+
+<h2>A) Rychlé měření pomocí time</h2>
+<pre><span class="kw">import</span> time
+
+start = time.time()
+df = nacti_data()
+df = transformuj(df)
+end = time.time()
+<span class="kw">print</span>(<span class="st">f"Trvalo: {end - start:.2f} sekund"</span>)</pre>
+
+<h2>B) Profesionální profilace &ndash; cProfile (terminál)</h2>
+<pre><span class="cm"># Spustit v TERMINÁLU &ndash; nemusíš měnit kód:</span>
+python -m cProfile -s time analyza.py
+
+<span class="cm"># Výstup (zkráceno):</span>
+<span class="cm">#    ncalls  tottime  percall  cumtime  percall filename:lineno(function)</span>
+<span class="cm">#      1000    2.345    0.002    3.120    0.003 transformace.py:45(clean)</span>
+<span class="cm">#         1    0.001    0.001    3.121    3.121 analyza.py:1(&lt;module&gt;)</span></pre>
+
+<h2>Jak číst výstup</h2>
+<div class="table-wrap"><table>
+<tr><th>Sloupec</th><th>Co znamená</th></tr>
+<tr><td><code>ncalls</code></td><td>Kolikrát byla funkce zavolána</td></tr>
+<tr><td><code>tottime</code></td><td>Čas přímo v této funkci (bez podfunkcí) &ndash; <strong>hledej bottleneck zde</strong></td></tr>
+<tr><td><code>cumtime</code></td><td>Celkový čas včetně všech podfunkcí</td></tr>
+<tr><td><code>percall</code></td><td>tottime / ncalls</td></tr>
+</table></div>
+
+<h2>Přepínač -s (řazení výstupu)</h2>
+<pre>python -m cProfile -s time analyza.py     <span class="cm"># seřaď podle celkového času</span>
+python -m cProfile -s cumtime analyza.py  <span class="cm"># kumulativní čas</span>
+python -m cProfile -s calls analyza.py   <span class="cm"># počet volání</span></pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>V čem je cProfile lepší než time.time()?</strong> &ndash; cProfile nepotřebuje změny v kódu a profiluje celý skript najednou &ndash; zobrazí VŠECHNY funkce seřazené podle spotřeby. time.time() musíš ručně přidat kolem každého úseku.</li>
+<li><strong>Co je bottleneck?</strong> &ndash; Místo v kódu, které trvá neúměrně dlouho. Ve výstupu cProfile ho poznáš jako funkci s nejvyšším <code>tottime</code>.</li>
+<li><strong>Kde se spouští cProfile?</strong> &ndash; V TERMINÁLU: <code>python -m cProfile</code>. Ne v Pythonu jako funkce.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Profilaci spouštím z terminálu: <code>python -m cProfile -s time analyza.py</code>. Přepínač <code>-s time</code> seřadí výsledky podle spotřebovaného času &ndash; bottleneck vidím hned nahoře. Klíčový sloupec je <code>tottime</code>: čas strávený přímo v té funkci bez podfunkcí. Na rozdíl od <code>time.time()</code> nemusím vůbec sahat do zdrojového kódu.</div>
+
+<div class="page-nav"><a href="05.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Statická analýza a lintování kódu</span></a><a href="07.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Čtení dat z API a uložení do souboru</span><span>&rarr;</span></a></div>
+</div></body></html>

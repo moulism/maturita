@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 12 – SQL – JOIN (Spojování tabulek)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">SQL – JOIN (Spojování tabulek)</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 12</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 12 / 24</div>
+  <h1>SQL – JOIN (Spojování tabulek)</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>JOIN spojuje tabulky na základě PK-FK vztahu</li><li>INNER JOIN = průnik (jen záznamy s párem v obou tabulkách)</li><li>LEFT JOIN = vše z levé + páry z pravé (bez páru → NULL)</li><li>RIGHT JOIN = vše z pravé + páry z levé</li><li>FULL JOIN = vše z obou tabulek</li><li>LEFT JOIN + WHERE IS NULL = záznamy BEZ páru (kdo nikdy nekoupil)</li></ul></div>
+<h2>Proč JOIN</h2>
+<p>Databáze je rozkouskovaná do více tabulek, aby se data neopakovala. JOIN slouží k „<span class="hl hl-y">sešití tabulek zpět k sobě</span>", nejčastěji na základě PK-FK vztahu.</p>
+
+<h2>Typy JOIN</h2>
+<div class="table-wrap"><table>
+<tr><th>JOIN</th><th>Co vrátí</th><th>Analogie</th></tr>
+<tr><td><strong>INNER JOIN</strong></td><td>Jen záznamy s párem v OBOU tabulkách</td><td>Průnik dvou množin (Vennův diagram)</td></tr>
+<tr><td><strong>LEFT JOIN</strong></td><td>Vše z levé tabulky + páry z pravé. Bez páru → NULL</td><td>Levá množina + průnik</td></tr>
+<tr><td><strong>RIGHT JOIN</strong></td><td>Vše z pravé tabulky + páry z levé</td><td>Pravá množina + průnik (v praxi vzácný)</td></tr>
+<tr><td><strong>FULL JOIN</strong></td><td>Vše z obou tabulek. Bez páru → NULL na obou stranách</td><td>Sjednocení obou množin</td></tr>
+<tr><td><strong>SELF JOIN</strong></td><td>Tabulka se spojuje sama se sebou</td><td>Zaměstnanec → jeho nadřízený (stejná tabulka)</td></tr>
+<tr><td><strong>CROSS JOIN</strong></td><td>Kartézský součin — každý s každým</td><td>10×10 = 100 kombinací (zřídka užitečné)</td></tr>
+</table></div>
+
+<pre><span class="cm">-- INNER JOIN: zákazníci, kteří mají objednávku</span>
+<span class="kw">SELECT</span> z.jmeno, o.id_objednavky
+<span class="kw">FROM</span>   Zakaznici z
+<span class="kw">INNER JOIN</span> Objednavky o <span class="kw">ON</span> z.id = o.zakaznik_id
+
+<span class="cm">-- LEFT JOIN: zákazníci, kteří NIKDY nekoupili</span>
+<span class="kw">SELECT</span> z.jmeno
+<span class="kw">FROM</span>   Zakaznici z
+<span class="kw">LEFT JOIN</span> Objednavky o <span class="kw">ON</span> z.id = o.zakaznik_id
+<span class="kw">WHERE</span>  o.id_objednavky <span class="kw">IS NULL</span>    <span class="cm">-- jen ti bez páru</span></pre>
+
+<h2>NULL ve výsledku JOINu</h2>
+<p>Pokud z LEFT JOIN vznikne záznam bez páru, databáze vyplní chybějící sloupce hodnotou <code>NULL</code>. Proto: <code>WHERE sloupec IS NULL</code> najde právě ty záznamy, které nemají pár.</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jaký je nejpoužívanější JOIN?"</strong> — INNER JOIN. Vrací jen záznamy s párem na obou stranách.</li>
+<li><strong>„K čemu LEFT JOIN + WHERE IS NULL?"</strong> — Trik pro nalezení záznamů BEZ páru: zákazníci, kteří nikdy nenakoupili; zboží na skladě, které nikdo neobjednal. INNER JOIN by tyto záznamy odstranil.</li>
+<li><strong>„Proč se RIGHT JOIN skoro nepoužívá?"</strong> — Programátoři ho nahradí LEFT JOIN otočením pořadí tabulek. Je intuitivnější číst zleva doprava.</li>
+<li><strong>„Co je CROSS JOIN?"</strong> — Kartézský součin: každý řádek první tabulky × každý řádek druhé tabulky. 10 zákazníků × 10 produktů = 100 kombinací. Bez podmínky ON zpravidla nesmyslný výsledek.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„LEFT JOIN + WHERE IS NULL je výkonný trik. Kombinací odpovídáme na otázku 'Kdo u nás nikdy nic nekoupil?' INNER JOIN by tyto zákazníky zahodil. LEFT JOIN zobrazí VŠECHNY zákazníky. WHERE objednávka IS NULL pak odfiltruje jen ty, ke kterým se z tabulky objednávek nepodařilo nic připojit."</div>
+<div class="page-nav"><a href="11.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>SQL DML</span></a><a href="13.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Počítačová grafika</span><span>→</span></a></div>
+</div></body></html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 14 – Audio – zvuk a jeho digitalizace</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Audio – zvuk a jeho digitalizace</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 14</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 14 / 24</div>
+  <h1>Audio – zvuk a jeho digitalizace</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Digitalizace: Vzorkování (osa X, Hz) + Kvantování (osa Y, bity)</li><li>44 100 Hz = standard Audio CD | 16 bit = 65 536 úrovní hlasitosti</li><li>Bitrate = množství dat za sekundu (kbps) = kvalita zvuku</li><li>WAV = nekomprimovaný | MP3, AAC, OGG = ztrátové | FLAC = bezztrátové</li><li>Nyquistův teorém: vzorkovací frekvence ≥ 2× maximální frekvence zvuku</li></ul></div>
+<h2>Digitalizace zvukového signálu</h2>
+<p>Zvuk v přírodě je spojitá plynulá vlna (analogový signál). Počítač chápe jen jedničky a nuly (digitální signál). Převod probíhá A/D převodníkem ve dvou fázích:</p>
+<div class="table-wrap"><table>
+<tr><th></th><th>Vzorkování (Sampling)</th><th>Kvantování (Quantization)</th></tr>
+<tr><td><strong>Co dělá</strong></td><td>Vlnu „rozkrájí" na časové úseky</td><td>Každému úseku přiřadí číselnou hodnotu</td></tr>
+<tr><td><strong>Osa</strong></td><td>Osa X (čas)</td><td>Osa Y (amplituda/hlasitost)</td></tr>
+<tr><td><strong>Veličina</strong></td><td>Vzorkovací frekvence</td><td>Barevná/kvantizační hloubka</td></tr>
+<tr><td><strong>Jednotka</strong></td><td>Hz (Hertz)</td><td>bity</td></tr>
+<tr><td><strong>Standard CD</strong></td><td><span class="hl hl-y">44 100 Hz (44,1 kHz)</span></td><td><span class="hl hl-y">16 bitů = 65 536 úrovní</span></td></tr>
+</table></div>
+
+<div class="box box-b"><strong>Vizualizace digitalizace (nakresli na tabuli!)</strong>
+1. Nakresli sinusoidu (analogový zvuk) → 2. Přidej svislé čáry (vzorkování, časová osa) → 3. Přidej vodorovné čáry (kvantování, úrovně hlasitosti) → 4. Označuj průsečíky jako červené tečky (vzorky) → výsledek = schodovitý tvar = digitální signál</div>
+
+<h2>Datový tok (Bitrate) a velikost souboru</h2>
+<p>Bitrate udává, kolik dat za vteřinu musí téct z disku do reproduktorů. Čím vyšší, tím lepší kvalita ale větší soubor. Ovlivňují ho:</p>
+<ul>
+<li>Délka nahrávky</li>
+<li>Vzorkovací frekvence (Hz)</li>
+<li>Bitová hloubka</li>
+<li>Počet kanálů: Mono (1), Stereo (×2), 5.1 Surround (×6)</li>
+<li>Typ komprese</li>
+</ul>
+
+<h2>Zvukové formáty</h2>
+<div class="table-wrap"><table>
+<tr><th>Formát</th><th>Typ komprese</th><th>Kvalita</th><th>Typické použití</th></tr>
+<tr><td><strong>WAV</strong></td><td>Žádná</td><td>Studiová, obrovský soubor</td><td>Produkce, archivace</td></tr>
+<tr><td><strong>MP3</strong></td><td>Ztrátová (psychoakustická)</td><td>Skvělý poměr kvalita/velikost</td><td>Hudba, podcast</td></tr>
+<tr><td><strong>AAC</strong></td><td>Ztrátová (lepší než MP3)</td><td>Lepší než MP3 při stejném bitrate</td><td>YouTube, Apple iTunes, Spotify</td></tr>
+<tr><td><strong>OGG (Vorbis)</strong></td><td>Ztrátová (open-source)</td><td>Srovnatelný s MP3/AAC</td><td>Spotify, herní průmysl</td></tr>
+<tr><td><strong>FLAC</strong></td><td>Bezztrátová</td><td>Identická originálu, cca 50% menší než WAV</td><td>Audiofili, archivace</td></tr>
+</table></div>
+
+<h2>Psychoakustická komprese (MP3, AAC)</h2>
+<p>Ztrátové formáty využívají <strong>psychoakustický model</strong> — vymažou frekvence, které lidské ucho za přítomnosti jiných zvuků stejně neslyší (maskování). Sníží velikost na desetinu bez subjektivně vnímané ztráty kvality.</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč 44 100 Hz pro CD?"</strong> — Nyquist-Shannonův teorém: vzorkovací frekvence musí být alespoň 2× maximální frekvence zvuku. Lidské ucho slyší do 20 kHz → minimum je 40 kHz. 44,1 kHz je s rezervou. (Tohle je „proč" které imponuje komisi!)</li>
+<li><strong>„Co je psychoakustická komprese?"</strong> — Využívá omezení lidského sluchu. Pokud hraje hlasitý buben, tiché housle ve stejný moment neslyšíme — MP3 je smaže. Redukuje soubor 10× bez vnímané ztráty.</li>
+<li><strong>„Jaký je rozdíl MP3 a FLAC?"</strong> — MP3: ztrátová (informace ztraceny natrvalo), malý soubor. FLAC: bezztrátová (jako ZIP pro zvuk), ~50% velikost WAV, ale identická kvalita originálu.</li>
+<li><strong>„Co je Stereo vs. Surround?"</strong> — Stereo = 2 kanály (L, R). 5.1 Surround = 6 kanálů (přední, boční, zadní, subwoofer). Více kanálů = větší soubor.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„CD má vzorkovací frekvenci 44 100 Hz. Proč takové zvláštní číslo? Nyquist-Shannonův teorém říká: pro věrné zachycení zvuku musí být vzorkovací frekvence alespoň 2× vyšší než nejvyšší frekvence, kterou chceme zachytit. Lidské ucho slyší do 20 kHz → minimum 40 kHz. 44,1 kHz přidává bezpečnostní rezervu."</div>
+<div class="page-nav"><a href="13.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Počítačová grafika</span></a><a href="15.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Video – formáty a komprese</span><span>→</span></a></div>
+</div></body></html>

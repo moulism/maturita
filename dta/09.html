@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 09 &ndash; Typy dat a složené datové typy v Pythonu</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Typy dat a složené datové typy v Pythonu</span>
+  <span class="topbar-subject-badge badge-dta">DTA 09</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 09 / 15</div>
+  <h1>Typy dat a složené datové typy v Pythonu</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Kvalitativní: Nominální (bez pořadí: barva) / Ordinální (s pořadím: známky)</li>
+<li>Kvantitativní: Diskrétní (celá čísla: počet kusů) / Spojitá (desetinná: cena, váha)</li>
+<li>List [měnitelný, seřazený], Tuple (neměnný), Set {unikátní}, Dict {klíč: hodnota}</li>
+<li>Atomické: int, float, str, bool, NoneType (= SQL NULL)</li>
+<li>Deterministický = stejný vstup &rarr; vždy stejný výstup</li>
+</ul></div>
+
+<h2>Typy dat &ndash; statistický pohled</h2>
+<div class="table-wrap"><table>
+<tr><th>Kategorie</th><th>Podtyp</th><th>Popis</th><th>Příklady</th></tr>
+<tr><td rowspan="2"><strong>Kvalitativní</strong></td><td>Nominální</td><td>Kategorie bez přirozeného pořadí</td><td>Barva očí, pohlaví, značka auta</td></tr>
+<tr><td>Ordinální</td><td>Kategorie s pořadím, bez měřitelných rozdílů</td><td>Spokojenost 1&ndash;5, školní známky</td></tr>
+<tr><td rowspan="2"><strong>Kvantitativní</strong></td><td>Diskrétní</td><td>Celá čísla, počitatelné hodnoty</td><td>Počet kusů, počet zákazníků</td></tr>
+<tr><td>Spojitá</td><td>Libovolně přesná čísla</td><td>Výška, hmotnost, cena, teplota</td></tr>
+</table></div>
+
+<h2>Složené datové typy v Pythonu</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Vlastnosti</th><th>Příklad</th><th>Kdy použít</th></tr>
+<tr><td><strong>List</strong></td><td>Seřazený, <strong>měnitelný</strong>, povoluje duplikáty</td><td><code>[1, 2, "ahoj", 2]</code></td><td>Nejčastější; uchování pořadí</td></tr>
+<tr><td><strong>Tuple</strong></td><td>Seřazený, <strong>neměnný</strong> (read-only)</td><td><code>(10, 20, 30)</code></td><td>GPS souřadnice, konstantní data</td></tr>
+<tr><td><strong>Set</strong></td><td>Neseřazený, <strong>unikátní</strong> prvky</td><td><code>{1, 2, 3}</code></td><td>Odstraní duplicity, testování členství</td></tr>
+<tr><td><strong>Dict</strong></td><td>Klíč:Hodnota, klíče unikátní</td><td><code>{"jmeno": "Jan"}</code></td><td>Rychlé vyhledávání podle klíče</td></tr>
+</table></div>
+
+<h2>Atomické datové typy</h2>
+<div class="def-grid">
+<div class="def-t">int</div><div class="def-d">Celé číslo. <code>vek = 25</code>, <code>pocet = -3</code></div>
+<div class="def-t">float</div><div class="def-d">Desetinné číslo. <code>cena = 99.9</code>, <code>pi = 3.14</code></div>
+<div class="def-t">str</div><div class="def-d">Textový řetězec. Vždy v uvozovkách: <code>"Ahoj"</code></div>
+<div class="def-t">bool</div><div class="def-d">Jen <code>True</code> nebo <code>False</code>. Příznaky: <code>je_aktivni = True</code></div>
+<div class="def-t">NoneType</div><div class="def-d">Absence hodnoty: <code>None</code>. V SQL = NULL.</div>
+</div>
+
+<h2>Deterministický vs Nedeterministický</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Deterministický</th><th>Nedeterministický</th></tr>
+<tr><td>Definice</td><td>Stejný vstup &rarr; vždy stejný výstup</td><td>Stejný vstup &rarr; různé výstupy</td></tr>
+<tr><td>Příklad</td><td>Výpočet DPH, třídění</td><td>ML model s náhodností, UUID generátor</td></tr>
+<tr><td>Testování</td><td>Snadné &ndash; víme, co očekávat</td><td>Nutné fixovat seed: <code>np.random.seed(42)</code></td></tr>
+</table></div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Rozdíl List vs Tuple?</strong> &ndash; List je měnitelný (append, remove fungují). Tuple je neměnný &ndash; po vytvoření ho nelze změnit. Tuple je rychlejší a signalizuje úmysl: tato data se nemění.</li>
+<li><strong>Kdy nominální a kdy ordinální?</strong> &ndash; Nominální = bez pořadí (barva očí &ndash; modrá není více než hnědá). Ordinální = s pořadím, ale bez přesných mezer (1 je lepší než 2, ale nevíme o kolik).</li>
+<li><strong>Proč None a ne 0 nebo prázdný string?</strong> &ndash; None signalizuje absenci hodnoty &ndash; 'nevím, co tam je'. 0 nebo '' jsou konkrétní hodnoty. Pro analytiku je crucial rozdíl mezi '0 objednávek' a 'nevíme kolik objednávek má'.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Datové typy rozdělím na statistické (kvalitativní: nominální/ordinální; kvantitativní: diskrétní/spojitá) a programátorské. V Pythonu jsou čtyři základní kolekce: List pro uchování pořadí, Tuple pro neměnná data, Set pro unikátní hodnoty, Dict pro vyhledávání klíč-hodnota. Klíčový detail: Set automaticky odstraní duplicity &ndash; <code>len(set(df['produkt']))</code> vrátí počet různých produktů.</div>
+
+<div class="page-nav"><a href="08.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Datová analytika ve společnosti a CRISP-DM</span></a><a href="10.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Funkce a moduly v Pythonu</span><span>&rarr;</span></a></div>
+</div></body></html>

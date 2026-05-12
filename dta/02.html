@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 02 &ndash; Návrh třídy Transform s logováním</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Návrh třídy Transform s logováním</span>
+  <span class="topbar-subject-badge badge-dta">DTA 02</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 02 / 15</div>
+  <h1>Návrh třídy Transform s logováním</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Třída = šablona/blueprint; <code>__init__</code> = konstruktor, volá se automaticky při vytvoření objektu</li>
+<li><code>self.logger = logging.getLogger(__name__)</code> &ndash; inicializuj VŽDY v <code>__init__</code></li>
+<li>Úrovně: DEBUG &lt; INFO &lt; WARNING &lt; ERROR &lt; CRITICAL</li>
+<li><code>try/except</code>: v except bloku vždy <code>self.logger.error(...)</code> + <code>raise</code></li>
+<li>Metody třídy přijímají <code>self</code> jako první parametr</li>
+</ul></div>
+
+<h2>Proč třídy a OOP?</h2>
+<p>Třída (<em>class</em>) sdružuje <strong>data</strong> (atributy) a <strong>funkce</strong> (metody) do jednoho celku. Pro transformaci dat: místo mnoha volných funkcí máme jeden objekt <code>Transform</code>, který si pamatuje svůj stav (logger, cestu k souboru, dataframe) a nabízí jasné rozhraní.</p>
+
+<h2>Základní struktura třídy Transform</h2>
+<pre><span class="kw">import</span> logging
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="kw">class</span> Transform:
+    <span class="kw">def</span> __init__(self, source: str):
+        self.logger = logging.getLogger(__name__)
+        self.source = source
+        self.df = <span class="kw">None</span>
+
+    <span class="kw">def</span> load(self) -> <span class="kw">None</span>:
+        <span class="kw">try</span>:
+            self.df = pd.read_csv(self.source, sep=<span class="st">';'</span>, encoding=<span class="st">'utf-8-sig'</span>)
+            self.logger.info(<span class="st">f"Načteno {len(self.df)} řádků"</span>)
+        <span class="kw">except</span> FileNotFoundError <span class="kw">as</span> e:
+            self.logger.error(<span class="st">f"Soubor nenalezen: {e}"</span>)
+            <span class="kw">raise</span>
+
+    <span class="kw">def</span> add_vat(self, col: str, rate: float = 0.21) -> <span class="kw">None</span>:
+        <span class="kw">try</span>:
+            self.df[col + <span class="st">'_s_dph'</span>] = self.df[col] * (1 + rate)
+            self.logger.info(<span class="st">f"DPH přidáno ke sloupci {col}"</span>)
+        <span class="kw">except</span> KeyError <span class="kw">as</span> e:
+            self.logger.error(<span class="st">f"Sloupec neexistuje: {e}"</span>)
+            <span class="kw">raise</span>
+
+t = Transform(<span class="st">'data.csv'</span>)
+t.load()
+t.add_vat(<span class="st">'cena'</span>)</pre>
+
+<h2>Konfigurace logování</h2>
+<pre>logging.basicConfig(
+    level=logging.DEBUG,
+    format=<span class="st">'%(asctime)s %(name)s %(levelname)s %(message)s'</span>,
+    handlers=[
+        logging.FileHandler(<span class="st">'transform.log'</span>),
+        logging.StreamHandler()
+    ]
+)</pre>
+
+<h2>Úrovně logování</h2>
+<div class="table-wrap"><table>
+<tr><th>Úroveň</th><th>Kdy použít</th></tr>
+<tr><td><code>DEBUG</code></td><td>Ladění &ndash; podrobné informace pro vývojáře</td></tr>
+<tr><td><code>INFO</code></td><td>Normální průběh: data načtena, transformace proběhla</td></tr>
+<tr><td><code>WARNING</code></td><td>Neočekávaná situace, ale program běží dál</td></tr>
+<tr><td><code>ERROR</code></td><td>Operace selhala (loguj + raise)</td></tr>
+<tr><td><code>CRITICAL</code></td><td>Kritická chyba &ndash; program se nemůže zotavit</td></tr>
+</table></div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč nestačí print() místo loggingu?</strong> &ndash; print() nejde selektivně vypnout, neredirektuje do souboru, nemá časová razítka ani úrovně závažnosti. Logger se konfiguruje bez změny kódu (DEBUG v testování, WARNING v produkci).</li>
+<li><strong>Co je rozdíl konstruktor vs metoda?</strong> &ndash; <code>__init__</code> se volá automaticky při <code>t = Transform()</code>. Ostatní metody (load, add_vat) voláš explicitně.</li>
+<li><strong>Proč raise v except bloku?</strong> &ndash; Chceme zalogovat chybu A zároveň ji propagovat výš. Bez <code>raise</code> by program pokračoval s prázdnými daty &ndash; tiché selhání je horší než hlasitá chyba.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Návrh třídy s logováním ukazuje princip zapouzdření. Klíčový detail, který učitelé sledují: logger inicializuji v <code>__init__</code> a v každém <code>except</code> bloku volám <code>self.logger.error()</code> ještě před tím, než výjimku hodím dál přes <code>raise</code>. Tak mám v logu vždy přesný záznam o tom, co a kde selhalo.</div>
+
+<div class="page-nav"><a href="01.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Transformace dat pomocí knihovny Pandas</span></a><a href="03.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Spuštění dockerizované databáze a extrakce dat</span><span>&rarr;</span></a></div>
+</div></body></html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 03 &ndash; Spuštění dockerizované databáze a extrakce dat</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Spuštění dockerizované databáze a extrakce dat</span>
+  <span class="topbar-subject-badge badge-dta">DTA 03</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 03 / 15</div>
+  <h1>Spuštění dockerizované databáze a extrakce dat</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Docker = kontejner (izolované prostředí) spustitelný na jakémkoliv OS</li>
+<li><code>docker-compose up -d</code> spustí DB na pozadí</li>
+<li>Connection string: <code>postgresql://user:password@localhost:5432/dbname</code></li>
+<li><code>pip install psycopg2-binary</code> &ndash; driver pro PostgreSQL (bez něj SQLAlchemy neumí mluvit s Postgres)</li>
+<li><code>pd.read_sql_query(sql, engine)</code> &ndash; SQL dotaz přímo do DataFrame</li>
+</ul></div>
+
+<h2>Co je Docker a proč ho používáme?</h2>
+<p>Docker zabalí aplikaci i se všemi závislostmi do <strong>kontejneru</strong>. Ten běží stejně na Windows, Linuxu i Macu &ndash; žádné "u mě to funguje". Pro analytiku: PostgreSQL databáze poběží na tvém notebooku bez nutnosti instalace.</p>
+
+<div class="def-grid">
+<div class="def-t">Image</div><div class="def-d">Šablona (recept). Např. <code>postgres:15</code> &ndash; hotová image PostgreSQL. Stahuje se z Docker Hub.</div>
+<div class="def-t">Kontejner</div><div class="def-d">Spuštěná instance image. Z jedné image lze spustit N kontejnerů.</div>
+<div class="def-t">docker-compose.yml</div><div class="def-d">Konfigurační soubor &ndash; popisuje, jaké kontejnery spustit, na jakých portech, s jakými env proměnnými.</div>
+</div>
+
+<h2>docker-compose.yml + spuštění</h2>
+<pre><span class="cm"># docker-compose.yml</span>
+version: <span class="st">'3.8'</span>
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    ports:
+      - <span class="st">"5432:5432"</span></pre>
+<pre>docker-compose up -d     <span class="cm"># spustí na pozadí</span>
+docker-compose ps        <span class="cm"># stav kontejnerů</span>
+docker-compose down      <span class="cm"># zastavení</span></pre>
+
+<h2>Připojení Pythonu k databázi</h2>
+<pre><span class="kw">from</span> sqlalchemy <span class="kw">import</span> create_engine
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+engine = create_engine(<span class="st">'postgresql://user:password@localhost:5432/dbname'</span>)
+df = pd.read_sql_query(<span class="st">"SELECT * FROM objednavky WHERE rok = 2024"</span>, engine)
+df.head()</pre>
+
+<h2>Nejčastější chyby</h2>
+<div class="table-wrap"><table>
+<tr><th>Chyba</th><th>Příčina</th><th>Řešení</th></tr>
+<tr><td><code>ModuleNotFoundError: psycopg2</code></td><td>Chybí PostgreSQL driver</td><td><code>pip install psycopg2-binary</code></td></tr>
+<tr><td><code>Connection refused</code></td><td>Kontejner neběží</td><td><code>docker-compose ps</code> &rarr; zkontroluj stav</td></tr>
+<tr><td><code>password authentication failed</code></td><td>Špatné credentials</td><td>Zkontroluj docker-compose.yml vs connection string</td></tr>
+</table></div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Co je rozdíl Docker image vs kontejner?</strong> &ndash; Image je jako ISO soubor (statická šablona). Kontejner je spuštěná instance &ndash; jako spuštěné PC z ISO. Z jedné image lze spustit 100 kontejnerů.</li>
+<li><strong>Proč SQLAlchemy a ne přímo psycopg2?</strong> &ndash; SQLAlchemy je abstrakční vrstva &ndash; stejný kód funguje s PostgreSQL, MySQL i SQLite, stačí změnit connection string.</li>
+<li><strong>Jaký je formát connection stringu?</strong> &ndash; Vždy: <code>dialect://user:password@host:port/dbname</code>. To je nutné umět zpaměti.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Klíč celé otázky je connection string. Formát: <code>dialect://user:password@host:port/dbname</code>. Nejčastější chyba: zapomenout nainstalovat driver &ndash; <code>pip install psycopg2-binary</code>. SQLAlchemy samo neumí mluvit s PostgreSQL, potřebuje driver. Druhá záludnost: při exportu do CSV vždy <code>encoding=utf-8-sig</code>, jinak se čeština v Excelu zobrazí jako nesmysl.</div>
+
+<div class="page-nav"><a href="02.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Návrh třídy Transform s logováním</span></a><a href="04.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Otestování transformační funkce pomocí pytest</span><span>&rarr;</span></a></div>
+</div></body></html>

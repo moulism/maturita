@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 08 &ndash; Datová analytika ve společnosti a CRISP-DM</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Datová analytika ve společnosti a CRISP-DM</span>
+  <span class="topbar-subject-badge badge-dta">DTA 08</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 08 / 15</div>
+  <h1>Datová analytika ve společnosti a CRISP-DM</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>4 typy: Deskriptivní (co?) &rarr; Diagnostická (proč?) &rarr; Prediktivní (co bude?) &rarr; Preskriptivní (co dělat?)</li>
+<li>CRISP-DM: Business &rarr; Data &rarr; Příprava &rarr; Modelování &rarr; Evaluace &rarr; Deployment</li>
+<li>Monetizace: Přímá (prodej dat) vs Nepřímá (lepší rozhodování interně)</li>
+<li>Role: Data Analyst (SQL/reporty), Data Scientist (ML), Data Engineer (pipeline)</li>
+</ul></div>
+
+<h2>4 typy analytických úloh</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Otázka</th><th>Nástroje</th><th>Příklad</th></tr>
+<tr><td><strong>Deskriptivní</strong></td><td>Co se stalo?</td><td>SQL, Power BI, reporty</td><td>Tržby za Q3 2024 podle regionu</td></tr>
+<tr><td><strong>Diagnostická</strong></td><td>Proč se to stalo?</td><td>korelace, drill-down</td><td>Proč klesl prodej v Praze v říjnu?</td></tr>
+<tr><td><strong>Prediktivní</strong></td><td>Co se stane?</td><td>ML modely, statistika</td><td>Odhad poptávky příští měsíc</td></tr>
+<tr><td><strong>Preskriptivní</strong></td><td>Co máme dělat?</td><td>optimalizace, automatizace</td><td>Automatické nastavení ceny pro max. zisk</td></tr>
+</table></div>
+
+<h2>CRISP-DM &ndash; metodika analytického projektu</h2>
+<div class="table-wrap"><table>
+<tr><th>Fáze</th><th>Co se dělá</th><th>Výstup</th></tr>
+<tr><td><strong>1. Business Understanding</strong></td><td>Co chce byznys? Jaká je cílová metrika?</td><td>Zadání projektu</td></tr>
+<tr><td><strong>2. Data Understanding</strong></td><td>Jaká data mám? EDA &ndash; <code>df.info(), df.describe()</code></td><td>EDA report</td></tr>
+<tr><td><strong>3. Data Preparation</strong></td><td>Čistění, transformace, feature engineering</td><td>Čistý dataset</td></tr>
+<tr><td><strong>4. Modeling</strong></td><td>Výběr a trénink modelu (regrese, klasifikace)</td><td>Natrénovaný model</td></tr>
+<tr><td><strong>5. Evaluation</strong></td><td>Je model dobrý? Splňuje business cíl?</td><td>Model report</td></tr>
+<tr><td><strong>6. Deployment</strong></td><td>Nasazení do produkce (API, dashboard)</td><td>Fungující systém</td></tr>
+</table></div>
+
+<h2>Monetizace dat</h2>
+<div class="def-grid">
+<div class="def-t">Přímá</div><div class="def-d">Prodej dat třetím stranám. Příklad: prodej anonymizovaných nákupních dat mediálním agenturám.</div>
+<div class="def-t">Nepřímá</div><div class="def-d">Data snižují náklady / zvyšují příjmy interně. Příklady: lepší cílení reklam, detekce podvodů, optimalizace tras.</div>
+</div>
+
+<h2>Datové role ve firmě</h2>
+<div class="table-wrap"><table>
+<tr><th>Role</th><th>Hlavní práce</th><th>Nástroje</th></tr>
+<tr><td>Data Analyst</td><td>Reporty, dashboardy, SQL pro management</td><td>SQL, Excel, Power BI</td></tr>
+<tr><td>Data Scientist</td><td>ML modely, predikce, statistické analýzy</td><td>Python (sklearn), R</td></tr>
+<tr><td>Data Engineer</td><td>ETL pipeline, datové sklady</td><td>Spark, Airflow, dbt</td></tr>
+</table></div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Rozdíl Data Analyst vs Data Scientist?</strong> &ndash; Analyst odpovídá na otázky o minulosti a přítomnosti (reporty, dashboardy). Scientist tvoří prediktivní modely &ndash; předpovídá budoucnost pomocí ML.</li>
+<li><strong>Proč je CRISP-DM iterativní?</strong> &ndash; Výsledky evaluace (fáze 5) mohou ukázat, že je potřeba vrátit se k přípravě dat (fáze 3) nebo přehodnotit business zadání (fáze 1). Projekt nikdy nejde striktně lineárně.</li>
+<li><strong>Co je EDA?</strong> &ndash; Exploratory Data Analysis = průzkum dat na začátku. <code>df.info()</code>, <code>df.describe()</code>, histogramy, korelační matice. Cílem je pochopit data PŘED modelováním.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Datová analytika ve firmě se dělí na 4 typy podle složitosti: deskriptivní říká co se stalo, diagnostická proč, prediktivní co se stane, preskriptivní co dělat. Analytický projekt probíhá podle CRISP-DM &ndash; 6 fází od pochopení byznysu po nasazení. CRISP-DM je iterativní: výsledky evaluace nás mohou přivést zpátky k fázi přípravy dat.</div>
+
+<div class="page-nav"><a href="07.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Čtení dat z API a uložení do souboru</span></a><a href="09.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Typy dat a složené datové typy v Pythonu</span><span>&rarr;</span></a></div>
+</div></body></html>

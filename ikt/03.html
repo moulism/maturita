@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 03 – Zpracování dat v Excelu</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Zpracování dat v Excelu</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 03</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 03 / 24</div>
+  <h1>Zpracování dat v Excelu</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul><li>Sešit (.xlsx) → listy → buňky (průsečík sloupce a řádku)</li><li>Relativní A1 (mění se) vs. Absolutní $A$1 (ukotveno = F4)</li><li>Vzorce začínají =, funkce: SUMA, PRŮMĚR, KDYŽ, SVYHLEDAT</li><li>Podmíněný formát = automatické zbarvení podle hodnoty</li><li>Kontingenční tabulka = sumarizace velkých dat přetažením</li><li>Typy grafů: sloupcový (srovnání), spojnicový (trend), koláčový (podíl max. 5 položek)</li></ul></div>
+
+<h2>Základní pojmy — sešit, listy, buňky</h2>
+<div class="def-grid">
+<div class="def-t">Sešit</div><div class="def-d">Celý soubor Excelu (.xlsx).</div>
+<div class="def-t">List</div><div class="def-d">Záložka v sešitu (List1, List2). Lze přejmenovávat a propojovat vzorci.</div>
+<div class="def-t">Buňka</div><div class="def-d">Základní jednotka. Průsečík sloupce a řádku s unikátní adresou (A1, C15).</div>
+</div>
+
+<h2>Typy odkazů ve vzorcích</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Zápis</th><th>Chování při kopírování</th><th>Kdy použít</th></tr>
+<tr><td><strong>Relativní</strong></td><td><code>A1</code></td><td>Mění se (A1 → A2 → A3)</td><td>Většina vzorců</td></tr>
+<tr><td><strong>Absolutní</strong></td><td><code>$A$1</code></td><td>Nemění se (vždy A1)</td><td>Kurz měny, DPH, konstanty</td></tr>
+<tr><td><strong>Smíšený</strong></td><td><code>$A1</code> nebo <code>A$1</code></td><td>Ukotveno jen sloupec nebo jen řádek</td><td>Složité tabulky</td></tr>
+</table></div>
+
+<h2>Funkce Excelu</h2>
+<div class="def-grid">
+<div class="def-t">SUMA / AVG</div><div class="def-d">Součet / průměr. <code>=SUMA(A1:A100)</code></div>
+<div class="def-t">KDYŽ</div><div class="def-d">Podmíněný výpočet. <code>=KDYŽ(B2>0;"Zisk";"Ztráta")</code></div>
+<div class="def-t">SVYHLEDAT</div><div class="def-d">Hledá hodnotu v tabulce a vrátí data ze stejného řádku.</div>
+<div class="def-t">COUNTIFS/SUMIFS</div><div class="def-d">Počítá/sčítá jen řádky splňující více podmínek. Modernější náhrada za databázové funkce.</div>
+</div>
+
+<h2>Podmíněný formát</h2>
+<p>Automatické vizuální formátování buněk na základě jejich hodnoty. Příklady: buňky pod 0 se samy obarví červeně, datové pruhy (miniaturní sloupcové grafy v buňkách), ikony semaforu.</p>
+
+<h2>Kontingenční tabulka</h2>
+<p>Nejsilnější nástroj Excelu. Sumarizuje <strong>i statisíce řádků</strong> dat přetažením polí. Dynamicky přepočítává výsledky. Příklad: z tabulky 50 000 prodejů vytvoří přehled tržeb podle kategorie a měsíce za 3 sekundy.</p>
+
+<h2>Grafické zobrazení dat — typy grafů</h2>
+<div class="table-wrap"><table>
+<tr><th>Graf</th><th>Vhodný pro</th><th>Pozor</th></tr>
+<tr><td>Sloupcový</td><td>Porovnávání absolutních hodnot (tržby poboček)</td><td>Pořadí sloupců musí dávat smysl</td></tr>
+<tr><td>Spojnicový</td><td>Vývoj v čase, trendy</td><td>Nevhodný pro nesouvisející kategorie</td></tr>
+<tr><td>Koláčový</td><td>Podíl na celku</td><td>Max. 5 položek, jinak nečitelný!</td></tr>
+</table></div>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Co je absolutní odkaz a jak ho zapsat?"</strong> — $A$1. Klávesa F4 přepíná mezi relativním, absolutním a smíšeným. Bez znalosti absolutního odkazu nelze efektivně pracovat v Excelu.</li>
+<li><strong>„Jaký je rozdíl SVYHLEDAT a INDEXPOZVYHLEDAT?"</strong> — SVYHLEDAT hledá zleva doprava a nelze ho použít, pokud je hledaný sloupec vpravo. INDEXPOZVYHLEDAT je flexibilnější a efektivnější.</li>
+<li><strong>„K čemu jsou databázové funkce (DSUMA)?"</strong> — Vyžadují speciální tabulku kritérií. Dnes je většinou nahradily SUMIFS/COUNTIFS, které jsou jednodušší.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Absolutní odkaz je základ práce v Excelu. Mám ceny 50 produktů v eurech a kurz v buňce D1. Vzorec 'Cena * D1' zkopírovaný dolů hledá kurz v D2, D3... (prázdné). S absolutním odkazem 'Cena * $D$1' databáze vždy sáhne do buňky D1, ať kopírujeme kamkoliv. F4 přepíná mezi typy odkazů."</div>
+
+<div class="page-nav"><a href="02.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Strukturovaný dokument</span></a><a href="04.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Multidimenzionální model</span><span>→</span></a></div>
+</div></body></html>

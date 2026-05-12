@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 15 &ndash; Vizualizace dat &ndash; Matplotlib a Seaborn</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Vizualizace dat &ndash; Matplotlib a Seaborn</span>
+  <span class="topbar-subject-badge badge-dta">DTA 15</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 15 / 15</div>
+  <h1>Vizualizace dat &ndash; Matplotlib a Seaborn</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Matplotlib = nízkoúrovňová; Seaborn = nadstavba s hezčím výstupem</li>
+<li>Bar chart: srovnání kategorií; Line: vývoj v čase; Scatter: korelace</li>
+<li>Box plot: distribuce + outliery; Histogram: rozložení hodnot; Heatmap: korelační matice</li>
+<li><code>plt.figure(figsize=(10,6))</code> před každým grafem</li>
+<li><code>plt.savefig()</code> PŘED <code>plt.show()</code> &ndash; jinak uložíš prázdný obrázek!</li>
+</ul></div>
+
+<h2>Matplotlib vs Seaborn</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Matplotlib</th><th>Seaborn</th></tr>
+<tr><td>Abstrakce</td><td>Nízká &ndash; plná kontrola, více kódu</td><td>Vysoká &ndash; méně kódu, hezčí výsledek</td></tr>
+<tr><td>Styl</td><td>Nutno nastavit ručně</td><td>Moderní výchozí styly</td></tr>
+<tr><td>Integrace s Pandas</td><td>Základní</td><td>Přímá (přijímá DataFrame)</td></tr>
+<tr><td>Nejlepší pro</td><td>Přesnou kontrolu, subploty</td><td>Statistické vizualizace, EDA</td></tr>
+</table></div>
+
+<h2>Základní graf &ndash; Matplotlib</h2>
+<pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+plt.figure(figsize=(10, 6))
+plt.bar(df[<span class="st">'region'</span>], df[<span class="st">'trzby'</span>], color=<span class="st">'steelblue'</span>)
+plt.title(<span class="st">'Tržby podle regionu'</span>)
+plt.xlabel(<span class="st">'Region'</span>)
+plt.ylabel(<span class="st">'Tržby (Kč)'</span>)
+plt.tight_layout()
+plt.savefig(<span class="st">'trzby.png'</span>, dpi=150)   <span class="cm"># PŘED show()!</span>
+plt.show()</pre>
+
+<h2>Typy grafů</h2>
+<div class="table-wrap"><table>
+<tr><th>Graf</th><th>Kdy použít</th><th>Matplotlib</th><th>Seaborn</th></tr>
+<tr><td>Bar chart</td><td>Srovnání kategorií</td><td><code>plt.bar()</code></td><td><code>sns.barplot()</code></td></tr>
+<tr><td>Line chart</td><td>Vývoj v čase</td><td><code>plt.plot()</code></td><td><code>sns.lineplot()</code></td></tr>
+<tr><td>Scatter plot</td><td>Korelace dvou proměnných</td><td><code>plt.scatter()</code></td><td><code>sns.scatterplot()</code></td></tr>
+<tr><td>Histogram</td><td>Distribuce jedné proměnné</td><td><code>plt.hist()</code></td><td><code>sns.histplot()</code></td></tr>
+<tr><td>Box plot</td><td>Distribuce + outliery</td><td><code>plt.boxplot()</code></td><td><code>sns.boxplot()</code></td></tr>
+<tr><td>Heatmap</td><td>Korelační matice</td><td>&ndash;</td><td><code>sns.heatmap()</code></td></tr>
+</table></div>
+
+<h2>Seaborn &ndash; korelační heatmapa</h2>
+<pre><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(df.corr(), annot=<span class="kw">True</span>, fmt=<span class="st">'.2f'</span>, cmap=<span class="st">'coolwarm'</span>)
+plt.title(<span class="st">'Korelační matice'</span>)
+plt.savefig(<span class="st">'korelace.png'</span>)
+plt.show()</pre>
+
+<h2>Subploty &ndash; více grafů najednou</h2>
+<pre>fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+axes[0].bar(df[<span class="st">'region'</span>], df[<span class="st">'trzby'</span>])
+axes[0].set_title(<span class="st">'Tržby'</span>)
+axes[1].plot(df[<span class="st">'mesic'</span>], df[<span class="st">'naklady'</span>])
+axes[1].set_title(<span class="st">'Náklady'</span>)
+plt.tight_layout()
+plt.savefig(<span class="st">'prehled.png'</span>)
+plt.show()</pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Kdy scatter, kdy line chart?</strong> &ndash; Scatter: dvě kontinuální proměnné, chceme vidět korelaci (reklama vs tržby). Line: data v čase &ndash; každý bod je měření ve stejném časovém intervalu.</li>
+<li><strong>Co je box plot?</strong> &ndash; Zobrazuje medián, 1. a 3. kvartil (okraje krabice), rozsah (vousy) a outliery (tečky za vousy). Ideální pro porovnání distribuce více skupin najednou.</li>
+<li><strong>Proč savefig() před show()?</strong> &ndash; Po <code>show()</code> se canvas vyčistí. Pokud uložíš až po show(), uložíš prázdný obrázek.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Pro vizualizaci dat používám Matplotlib pro přesnou kontrolu a Seaborn pro statistické vizualizace s hezčím výchozím stylem. Vždy pojmenuji osy a uložím pomocí <code>savefig()</code> PŘED <code>show()</code>. Pro korelační analýzu je nejužitečnější <code>sns.heatmap(df.corr())</code> &ndash; na jednom obrázku vidím vztahy všech numerických proměnných najednou.</div>
+
+<div class="page-nav"><a href="14.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Transformace dat &ndash; datová kvalita a regex</span></a></div>
+</div></body></html>

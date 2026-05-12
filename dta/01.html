@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="cs"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 01 - Transformace dat pomocí knižovny Pandas</title>
+<link rel="stylesheet" href="../css/style.css">
+</head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DTA</a>
+  <span class="topbar-title">Transformace dat pomocí knižovny Pandas</span>
+  <span class="topbar-subject-badge badge-dta">DTA 01</span>
+</div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA · OTÁZKA 01/15</div>
+  <h1>Transformace dat pomocí knižovny Pandas</h1>
+  <span class="time-badge">⏱ ~15 minut</span>
+</div>
+
+<div class="box box-g"><strong>🎯 Klíčové pojmy</strong>DataFrame, read_csv, head/info/describe, filtrace, groupby, merge, pivot_table, čistění dat</div>
+<h2>1. Import a první průzkum dat</h2>
+<pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.read_csv(<span class="st">'data.csv'</span>, sep=<span class="st">';'</span>, encoding=<span class="st">'utf-8-sig'</span>)
+df.head()          <span class="cm"># prvních 5 řádků</span>
+df.tail()          <span class="cm"># posledních 5</span>
+df.info()          <span class="cm"># typy sloupců + NULL hodnoty</span>
+df.describe()      <span class="cm"># statistiky číselných sloupců</span>
+df.shape           <span class="cm"># (počet_řádků, počet_sloupců)</span>
+df.columns         <span class="cm"># seznam sloupců</span>
+df.isnull().sum()  <span class="cm"># počet NULL v každém sloupci</span></pre>
+
+<h2>2. Filtrace</h2>
+<pre><span class="cm"># Horizontální (výběr řádků):</span>
+df[df[<span class="st">'vek'</span>] &gt; 18]
+df[(df[<span class="st">'mesto'</span>] == <span class="st">'Praha'</span>) &amp; (df[<span class="st">'vek'</span>] &gt; 25)]
+df.query(<span class="st">'vek &gt; 18 and mesto == "Praha"'</span>)
+
+<span class="cm"># Vertikální (výběr sloupců):</span>
+df[[<span class="st">'jmeno'</span>, <span class="st">'vek'</span>, <span class="st">'mesto'</span>]]</pre>
+
+<h2>3. Transformace</h2>
+<pre>df[<span class="st">'cena_s_dph'</span>] = df[<span class="st">'cena'</span>] * 1.21
+df[<span class="st">'mesto'</span>] = df[<span class="st">'mesto'</span>].str.strip().str.upper()
+df[<span class="st">'datum'</span>] = pd.to_datetime(df[<span class="st">'datum'</span>])</pre>
+
+<h2>4. Agregace – GroupBy</h2>
+<pre>df.groupby(<span class="st">'kategorie'</span>)[<span class="st">'cena'</span>].sum()
+df.groupby(<span class="st">'kategorie'</span>).agg({<span class="st">'cena'</span>: <span class="st">'mean'</span>, <span class="st">'id'</span>: <span class="st">'count'</span>})</pre>
+
+<h2>5. Merge (JOIN) a Pivot</h2>
+<pre>pd.merge(df_zak, df_obj, on=<span class="st">'id'</span>, how=<span class="st">'left'</span>)
+
+df.pivot_table(values=<span class="st">'trzby'</span>, index=<span class="st">'region'</span>,
+               columns=<span class="st">'mesic'</span>, aggfunc=<span class="st">'sum'</span>)</pre>
+
+<h2>6. Čistění dat</h2>
+<pre>df.dropna()                              <span class="cm"># smaž řádky s NULL</span>
+df[<span class="st">'vek'</span>].fillna(df[<span class="st">'vek'</span>].mean())       <span class="cm"># nahrad NULL průměrem</span>
+df.drop_duplicates(subset=[<span class="st">'id'</span>])       <span class="cm"># odstraň duplikace</span>
+df[<span class="st">'cena'</span>] = df[<span class="st">'cena'</span>].astype(float)    <span class="cm"># změň typ</span></pre>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut</strong>Vždy pracuj s kopií: <code>df = df.copy()</code>. Metody lze řetězit: <code>df.query(...).rename(...).groupby(...).agg(...)</code>. Při exportu do CSV: <code>index=False, encoding='utf-8-sig'</code> – jinak se v Excelu rozsype čeština.</div>
+
+<div class="page-nav"><span></span><a href="02.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Návrh třídy Transform s logováním</span><span>→</span></a></div>
+</div></body></html>

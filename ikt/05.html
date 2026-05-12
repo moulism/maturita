@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 05 – Tvorba datových struktur pomocí jazyka DAX</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Tvorba datových struktur pomocí jazyka DAX</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 05</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 05 / 24</div>
+  <h1>Tvorba datových struktur pomocí jazyka DAX</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>DAX = vzorcovací jazyk pro datový model (Power BI)</li><li>Measure = virtuální, nepočítá se dokud neklikneme, šetří RAM</li><li>Calculated Column = fyzicky uložený sloupec, vhodný pro filtrování</li><li>Calculated Table = nová tabulka z existujících dat</li><li>VAR/RETURN = proměnné pro čitelný a efektivní kód</li></ul></div>
+<h2>Co je DAX a k čemu slouží</h2>
+<p><strong>DAX (Data Analysis Expressions)</strong> je vzorcovací jazyk, který doluje analytiku z datového modelu. Připomíná pokročilý Excel, ale operuje nad celými tabulkami najednou.</p>
+
+<h2>Tři typy DAX výpočtů</h2>
+<div class="def-grid">
+<div class="def-t">Measure (Měření)</div><div class="def-d"><strong>Virtuální</strong> — neuloží se, počítá se dynamicky při kliknutí na grafy. Šetří RAM. Příklad: <code>CelkoveTrzby = SUM(Prodeje[Cena])</code>. Vhodné pro 95 % výpočtů.</div>
+<div class="def-t">Calc. Column</div><div class="def-d"><strong>Fyzicky uložený</strong> sloupec, přidaný k tabulce. Počítá se při aktualizaci dat. Příklad: <code>Zisk = Prodeje[Cena] - Prodeje[Naklady]</code>. Použít jen pokud potřebujeme filtrovat nebo tvořit hierarchie podle tohoto sloupce.</div>
+<div class="def-t">Calc. Table</div><div class="def-d">Vytvoří novou tabulku z existujících dat. Příklad: Kalendář přes <code>CALENDARAUTO()</code>, nebo VIP zákazníci přes <code>FILTER()</code>.</div>
+</div>
+
+<h2>Measure vs. Calculated Column — kdy použít co</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Measure</th><th>Calculated Column</th></tr>
+<tr><td><strong>Uložení</strong></td><td>Nepočítá se, uloží se jen vzorec</td><td>Fyzicky uložen na disku a v RAM</td></tr>
+<tr><td><strong>Výkon</strong></td><td>Šetří RAM, doporučeno</td><td>Velké tabulky → zpomalení modelu</td></tr>
+<tr><td><strong>Filtrování</strong></td><td>❌ Nelze filtrovat podle</td><td>✅ Lze filtrovat</td></tr>
+<tr><td><strong>Kdy použít</strong></td><td>Součty, průměry, poměry (95 % případů)</td><td>Hierarchie, filtry, řazení</td></tr>
+</table></div>
+
+<h2>Proměnné — VAR a RETURN</h2>
+<p>Klíčová vlastnost DAX pro čitelný a výkonný kód. Bez proměnné se složitý výraz počítá tolikrát, kolikrát ho použijeme:</p>
+<pre>CistyZisk =
+<span class="kw">VAR</span> Dan = <span class="nm">0.21</span>
+<span class="kw">VAR</span> Zaklad = <span class="fn">SUM</span>(Faktury[Cena])
+<span class="kw">RETURN</span>
+    Zaklad - (Zaklad * Dan)</pre>
+<p>VAR uloží výsledek do paměti jednou. RETURN ho pak použije vícekrát — mnohem rychlejší než opakovat výpočet.</p>
+
+<h2>Datové typy v DAX</h2>
+<p>Integer, Decimal, String, DateTime, Boolean (True/False). DAX neumí sčítat text a číslo — je nutná explicitní konverze pomocí funkcí jako <code>VALUE()</code> nebo <code>FORMAT()</code>.</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč Measure místo Calculated Column?"</strong> — Measure se neuloží, nepočítá se, dokud neklikneme na graf → šetří RAM. Calculated Column se fyzicky uloží a počítá pro každý řádek → na velké tabulce zpomalí celý model.</li>
+<li><strong>„K čemu VAR/RETURN?"</strong> — Bez proměnné databáze počítá stejný výraz vícekrát. S VAR se složitý výpočet provede jednou a výsledek se uloží do paměti.</li>
+<li><strong>„Jaký je rozdíl CALCULATE a FILTER?"</strong> — CALCULATE mění kontext filtru (celý model). FILTER vrátí podmnožinu tabulky. CALCULATE se FILTER() uvnitř je velmi výkonná kombinace.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„U DAX kódu zdůrazním důležitost proměnných VAR/RETURN. Bez nich se složitá suma počítá třikrát. S VAR se vypočítá jednou, uloží do paměti a pod RETURN se třikrát použije jako hotové číslo. Kód je čitelnější a výrazně rychlejší."</div>
+<div class="page-nav"><a href="04.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Multidimenzionální model</span></a><a href="06.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Vizualizační metody</span><span>→</span></a></div>
+</div></body></html>

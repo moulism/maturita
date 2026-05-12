@@ -1,0 +1,347 @@
+/* shared.css — společné styly pro celou app */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #111;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+/* TOP NAV */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-decoration: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+.nav-back:hover { background: #f3f4f6; color: #111; }
+
+.nav-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.nav-sep { color: #d1d5db; font-size: 0.8rem; }
+
+/* MAIN CONTENT */
+.page-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* PAGE HEADER */
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid;
+}
+
+.page-header .subject-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+}
+
+.page-header h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.3rem;
+}
+
+.page-header .sub {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* QUESTION LIST */
+.q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.q-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1.5px solid #e5e7eb;
+  transition: all 0.15s;
+  background: #fff;
+}
+
+.q-item:hover {
+  border-color: currentColor;
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.q-num-badge {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.q-item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+  color: #111;
+}
+
+.q-item-arrow {
+  color: #d1d5db;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.q-item:hover .q-item-arrow { transform: translateX(3px); color: #9ca3af; }
+
+/* COLORS — IKT */
+.ikt { --c: #3b82f6; --cbg: #eff6ff; --ctag: #dbeafe; --ctext: #1d4ed8; --cborder: #3b82f6; }
+.ikt .page-header { border-color: #3b82f6; }
+.ikt .subject-tag { background: #dbeafe; color: #1d4ed8; }
+.ikt .q-num-badge { background: #dbeafe; color: #1d4ed8; }
+.ikt .q-item:hover { color: #3b82f6; }
+
+/* COLORS — DTA */
+.dta { --c: #10b981; }
+.dta .page-header { border-color: #10b981; }
+.dta .subject-tag { background: #dcfce7; color: #15803d; }
+.dta .q-num-badge { background: #dcfce7; color: #15803d; }
+.dta .q-item:hover { color: #10b981; }
+
+/* COLORS — DAB */
+.dab { --c: #f59e0b; }
+.dab .page-header { border-color: #f59e0b; }
+.dab .subject-tag { background: #fef3c7; color: #b45309; }
+.dab .q-num-badge { background: #fef3c7; color: #b45309; }
+.dab .q-item:hover { color: #f59e0b; }
+
+/* COLORS — LIT */
+.lit { --c: #ec4899; }
+.lit .page-header { border-color: #ec4899; }
+.lit .subject-tag { background: #fce7f3; color: #be185d; }
+.lit .q-num-badge { background: #fce7f3; color: #be185d; }
+.lit .q-item:hover { color: #ec4899; }
+
+/* ======= DETAIL PAGE (otázka) ======= */
+.detail-header {
+  margin-bottom: 2.5rem;
+}
+
+.detail-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 0.4rem;
+}
+
+.detail-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #111;
+  margin-bottom: 0.5rem;
+  line-height: 1.25;
+}
+
+.detail-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 0.25rem 0.7rem;
+  border-radius: 100px;
+}
+
+/* CONTENT BLOCKS */
+.section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.section p {
+  color: #374151;
+  margin-bottom: 0.7rem;
+  font-size: 0.96rem;
+}
+
+.section ul, .section ol {
+  padding-left: 1.3rem;
+  margin-bottom: 0.7rem;
+}
+
+.section li {
+  color: #374151;
+  margin-bottom: 0.35rem;
+  font-size: 0.95rem;
+}
+
+/* HIGHLIGHT BOXES */
+.hl-red {
+  background: #fef2f2;
+  border-left: 3px solid #ef4444;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.93rem;
+  color: #111;
+}
+
+.hl-yellow {
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.93rem;
+  color: #111;
+}
+
+.hl-green {
+  background: #f0fdf4;
+  border-left: 3px solid #10b981;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.93rem;
+  color: #111;
+}
+
+.hl-blue {
+  background: #eff6ff;
+  border-left: 3px solid #3b82f6;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.93rem;
+  color: #111;
+}
+
+.hl-purple {
+  background: #f5f3ff;
+  border-left: 3px solid #8b5cf6;
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  margin: 0.8rem 0;
+  font-size: 0.93rem;
+  color: #111;
+}
+
+/* INLINE HIGHLIGHTS */
+.hi-red { background: #fecaca; color: #991b1b; padding: 0.05em 0.35em; border-radius: 3px; font-weight: 600; font-size: 0.9em; }
+.hi-yellow { background: #fde68a; color: #92400e; padding: 0.05em 0.35em; border-radius: 3px; font-weight: 600; font-size: 0.9em; }
+.hi-green { background: #a7f3d0; color: #065f46; padding: 0.05em 0.35em; border-radius: 3px; font-weight: 600; font-size: 0.9em; }
+.hi-blue { background: #bfdbfe; color: #1e40af; padding: 0.05em 0.35em; border-radius: 3px; font-weight: 600; font-size: 0.9em; }
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; margin: 0.8rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+th { background: #f9fafb; color: #6b7280; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.6rem 0.9rem; text-align: left; border-bottom: 1.5px solid #e5e7eb; font-weight: 700; }
+td { padding: 0.55rem 0.9rem; border-bottom: 1px solid #f3f4f6; vertical-align: top; color: #374151; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafafa; }
+
+/* CODE */
+code { font-family: 'Courier New', monospace; background: #f3f4f6; padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.87em; color: #374151; }
+pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.84rem; line-height: 1.65; margin: 0.8rem 0; color: #1e293b; }
+
+/* TIP BOX */
+.tip-box {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  margin: 1.5rem 0 0;
+}
+.tip-box .tip-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #15803d;
+  margin-bottom: 0.4rem;
+}
+.tip-box p { color: #166534; font-size: 0.9rem; }
+
+/* DEF GRID */
+.def-grid { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1rem; margin: 0.7rem 0; align-items: start; }
+.def-term { font-weight: 700; color: #111; font-size: 0.9rem; white-space: nowrap; padding-top: 0.1rem; }
+.def-desc { color: #374151; font-size: 0.93rem; }
+
+/* NAV BETWEEN QUESTIONS */
+.q-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  gap: 1rem;
+}
+.q-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  background: #f3f4f6;
+  color: #374151;
+  transition: background 0.12s;
+}
+.q-nav a:hover { background: #e5e7eb; }
+
+@media (max-width: 600px) {
+  .page-wrap { padding: 1.5rem 1rem 4rem; }
+  .detail-title { font-size: 1.3rem; }
+}

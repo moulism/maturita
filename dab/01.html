@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 01 – Úvod do SQL a základní příkazy</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Úvod do SQL a základní příkazy</span>
+  <span class="topbar-subject-badge badge-dab">DAB 01</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 01 / 7</div>
+  <h1>Úvod do SQL a základní příkazy</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>SQL = standardizovaný jazyk pro relační DB</li>
+<li>DDL → CREATE, ALTER, DROP (stavba struktury)</li>
+<li>DML → SELECT, INSERT, UPDATE, DELETE (data)</li>
+<li>DCL → GRANT, REVOKE (práva)</li>
+<li>SELECT pořadí: SELECT – FROM – WHERE – ORDER BY</li>
+<li>DISTINCT = unikátní hodnoty, TOP/LIMIT = omezení, OFFSET = stránkování</li>
+</ul></div>
+
+<h2>Co je SQL a databázový systém</h2>
+<p><strong>SQL (Structured Query Language)</strong> je standardizovaný jazyk pro komunikaci s relačními databázemi. Databázový systém neslouží jen k uložení dat jako Excel — funguje jako <span class="hl hl-y">centrální mozek firmy</span>. Zajišťuje, že tisíce zaměstnanců mohou bezpečně a zároveň pracovat s evidencí zákazníků, objednávek nebo skladových zásob, aniž by se data poškodila nebo přepisovala.</p>
+
+<h2>Rozdělení příkazů SQL — 3 podjazyky</h2>
+<div class="table-wrap"><table>
+<tr><th>Název</th><th>Zkratka</th><th>Co dělá</th><th>Příkazy</th><th>Business využití</th></tr>
+<tr><td><strong>Data Definition Language</strong></td><td><span class="hl hl-b">DDL</span></td><td>Stavba struktury („regály")</td><td>CREATE, ALTER, DROP</td><td>Programátor navrhuje tabulky pro e-shop</td></tr>
+<tr><td><strong>Data Manipulation Language</strong></td><td><span class="hl hl-g">DML</span></td><td>Práce s daty uvnitř</td><td>SELECT, INSERT, UPDATE, DELETE</td><td>Účetní hledá objednávky, mění stav faktury</td></tr>
+<tr><td><strong>Data Control Language</strong></td><td><span class="hl hl-r">DCL</span></td><td>Práva a bezpečnost</td><td>GRANT, REVOKE</td><td>Admin: skladník vidí jen sklad, ne platy</td></tr>
+</table></div>
+
+<div class="box box-b"><strong>🏗️ Analogie — stavba obchodního domu</strong>
+DDL = architekt: staví zdi a regály (CREATE TABLE). DML = zaměstnanci: plní regály zbožím (INSERT, SELECT). DCL = bezpečnostní služba: určuje, kdo má od čeho klíče (GRANT). Pokud použiji DELETE, smažu krabici z regálu. Pokud DROP, zbourám celý regál i s obchodním domem.</div>
+
+<h2>Struktura příkazu SELECT</h2>
+<p>SELECT je nejpoužívanější příkaz — slouží ke <strong>čtení dat</strong>. Musí dodržovat přesné pořadí klíčových slov:</p>
+<pre><span class="kw">SELECT</span>   jmeno, prijmeni          <span class="cm">-- Co chci zobrazit (projekce)</span>
+<span class="kw">FROM</span>     Zakaznici               <span class="cm">-- Z jaké tabulky čerpám</span>
+<span class="kw">WHERE</span>    mesto = <span class="st">'Praha'</span>         <span class="cm">-- Filtrování řádků</span>
+<span class="kw">ORDER BY</span> obrat <span class="kw">DESC</span>             <span class="cm">-- Řazení (DESC = sestupně)</span></pre>
+
+<h2>Klíčová slova pro úpravu výstupu</h2>
+<div class="def-grid">
+<div class="def-t">DISTINCT</div><div class="def-d">Odstraní duplicity. <code>SELECT DISTINCT produkt</code> — každý produkt jen jednou, i když je v tabulce tisíckrát.</div>
+<div class="def-t">TOP / LIMIT</div><div class="def-d">Omezí počet vrácených řádků. <code>SELECT TOP 10</code> zobrazí jen 10 nejlepších zákazníků.</div>
+<div class="def-t">OFFSET + FETCH</div><div class="def-d">Stránkování: <code>OFFSET 50 ROWS FETCH NEXT 20 ROWS ONLY</code> — přeskoč prvních 50, ukaž dalších 20. Používá se na e-shopech, kde nechceme zobrazit milion produktů najednou.</div>
+<div class="def-t">ORDER BY</div><div class="def-d"><code>ASC</code> = vzestupně (výchozí), <code>DESC</code> = sestupně. Lze řadit víceúrovňově (nejdřív podle města, pak podle příjmení).</div>
+</div>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Jaký je rozdíl DDL a DML?"</strong> — DDL mění <em>strukturu</em> (tabulky, sloupce). DML mění <em>data</em> uvnitř. DROP zbourá tabulku. DELETE smaže řádky uvnitř tabulky.</li>
+<li><strong>„Proč mít databázi a ne jen Excel?"</strong> — Databáze: souběžný přístup tisíců uživatelů, referenční integrita, transakce (rollback), bezpečnostní práva, miliardy řádků. Excel: max. 1M řádků, žádná souběžnost, žádná ochrana dat.</li>
+<li><strong>„Co je DCL?"</strong> — Studenti zapomínají! Data Control Language — GRANT (přiděl práva), REVOKE (odeber práva). Určuje, kdo co smí vidět a měnit.</li>
+<li><strong>„V jakém pořadí databáze zpracovává dotaz?"</strong> — Nezačíná od SELECT! Pořadí: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. Proto nelze ve WHERE použít alias definovaný v SELECT.</li>
+<li><strong>„Co je stránkování a proč se používá?"</strong> — Na e-shopu nechceme zobrazit milion produktů najednou. OFFSET přeskočí prvních N produktů, FETCH zobrazí dalších M. Šetří paměť serveru i prohlížeče.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Rád bych detailněji popsal rozdíl mezi DDL a DML na konkrétní analogii. Představte si stavbu obchodního domu. DDL příkazy (CREATE, ALTER) používá architekt — staví zdi a regály. V tento moment je obchod prázdný. Jakmile je hotovo, nastupují zaměstnanci s DML příkazy (INSERT, UPDATE, SELECT) — plní regály zbožím. Pokud použiji DML příkaz DELETE, smažu krabici z regálu. Pokud ale použiji DDL příkaz DROP, zbourám celý regál i s obchodním domem — a žádná data se nedají vrátit."</div>
+
+<div class="page-nav"><span></span><a href="02.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Skupinové dotazy (GROUP BY, HAVING)</span><span>→</span></a></div>
+</div></body></html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 13 – Počítačová grafika – principy, barevné modely, formáty</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Počítačová grafika – principy, barevné modely, formáty</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 13</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 13 / 24</div>
+  <h1>Počítačová grafika – principy, barevné modely, formáty</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Rozlišení: pixely (fyzické monitor) vs DPI (tiskové — 300 DPI pro tisk)</li><li>Barevná hloubka: 1 bit=BW, 8 bit=256 barev, 24 bit=16M barev (True Color), 32 bit=+alfa kanál</li><li>RGB = aditivní (světlo, monitor) | CMYK = subtraktivní (tisk)</li><li>Raster = pixely (foto) | Vektor = matematika (logo, nelze zkostičkatět)</li><li>Formáty: JPEG (lossy), PNG (lossless+průhlednost), GIF (256 barev), SVG (vektor), PDF (tisk)</li></ul></div>
+<h2>Rozlišení obrazu — dva zcela odlišné pojmy</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ rozlišení</th><th>Jednotka</th><th>Kde se používá</th><th>Typické hodnoty</th></tr>
+<tr><td><strong>Fyzické (absolutní)</strong></td><td>pixely (šířka × výška)</td><td>Monitor, TV, displej</td><td>FullHD = 1920×1080, 4K = 3840×2160</td></tr>
+<tr><td><strong>Tiskové (relativní)</strong></td><td>DPI / PPI (body na palec)</td><td>Tiskárna, tisk dokumentů</td><td>72 DPI = web/monitor, 300 DPI = tisk, 600 DPI = profesionální tisk</td></tr>
+</table></div>
+<div class="box box-b"><strong>Klasická chyba:</strong> Stáhnete velký obrázek (1920×1080 px, 72 DPI). Na monitoru krásný. Z tiskárny: rozmazaná šmouha. Proč? Tiskárna na A4 kvalitu potřebuje 300 DPI. Obrázek 72 DPI má reálně dost bodů jen pro tisk ve velikosti poštovní známky.</div>
+
+<h2>Barevná hloubka</h2>
+<div class="table-wrap"><table>
+<tr><th>Hloubka</th><th>Počet barev</th><th>Použití</th></tr>
+<tr><td>1 bit</td><td>2 (černá/bílá)</td><td>Čárové kresby</td></tr>
+<tr><td>8 bit</td><td>256</td><td>Staré hry, GIF formát</td></tr>
+<tr><td>24 bit (<strong>True Color</strong>)</td><td>16 777 216</td><td>JPEG, fotografie, monitory</td></tr>
+<tr><td>32 bit</td><td>16M + alfa kanál (průhlednost)</td><td>PNG s průhledností, compositing</td></tr>
+</table></div>
+
+<h2>Barevné modely — RGB vs. CMYK</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>RGB</th><th>CMYK</th></tr>
+<tr><td><strong>Celý název</strong></td><td>Red, Green, Blue</td><td>Cyan, Magenta, Yellow, blacK</td></tr>
+<tr><td><strong>Typ míchání</strong></td><td><span class="hl hl-b">Aditivní</span> — přidáváme světlo do tmy</td><td><span class="hl hl-r">Subtraktivní</span> — barvy pohlcují světlo</td></tr>
+<tr><td><strong>Základ</strong></td><td>Černá (bez světla)</td><td>Bílý papír (plný odraz)</td></tr>
+<tr><td><strong>Vše dohromady</strong></td><td>Bílá (všechno světlo)</td><td>Teoreticky černá (proto K jako 4. barva)</td></tr>
+<tr><td><strong>Použití</strong></td><td>Monitor, TV, mobil, web</td><td>Tisk — tiskárna, letáky, obaly</td></tr>
+<tr><td><strong>Hodnoty</strong></td><td>R: 0–255, G: 0–255, B: 0–255</td><td>C: 0–100%, M: 0–100%, Y: 0–100%, K: 0–100%</td></tr>
+<tr><td><strong>Příklad</strong></td><td>Červená = (255, 0, 0)</td><td>Azurová = (100%, 0%, 0%, 0%)</td></tr>
+</table></div>
+
+<div class="box box-b"><strong>Proč CMYK přidává černou (K)?</strong>
+Míchání C+M+Y dá teoreticky černou, ale ve skutečnosti jen špinavě hnědou (inkousty nejsou ideální). Čistá černá K se přidává zvlášť — levnější, čistší, přesnější pro text.</div>
+
+<h2>Převod RGB ↔ CMYK</h2>
+<p>Přesný převod je složitý (závisí na ICC profilu konkrétní tiskárny). Zjednodušený vzorec:</p>
+<pre>K = 1 - max(R,G,B)      <span class="cm">// maximální složka</span>
+C = (1 - R - K) / (1-K)
+M = (1 - G - K) / (1-K)
+Y = (1 - B - K) / (1-K)</pre>
+<div class="box box-r"><strong>Prakticky důležité:</strong> JPEG fotka z internetu je v RGB. Aby šla kvalitně vytisknout, musí ji tisková příprava (Photoshop, InDesign) převést do CMYK — jinak barvy na papíře budou jiné než na monitoru!</div>
+
+<h2>Rastrová vs. vektorová grafika</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Rastrová (bitmapa)</th><th>Vektorová</th></tr>
+<tr><td><strong>Tvoří ji</strong></td><td>Pixely (mřížka barevných čtverečků)</td><td>Matematické křivky (Bézierovy křivky)</td></tr>
+<tr><td><strong>Zvětšení</strong></td><td>Pixelizace — vidíme čtverečky</td><td>Nekonečné zvětšení bez ztráty kvality</td></tr>
+<tr><td><strong>Typické použití</strong></td><td>Fotografie, realistické obrazy</td><td>Loga, ikony, letáky, ilustrace</td></tr>
+<tr><td><strong>Formáty</strong></td><td>JPEG, PNG, GIF, BMP, TIFF</td><td>SVG, AI, EPS, CDR</td></tr>
+<tr><td><strong>Software</strong></td><td>Photoshop, GIMP, Affinity Photo</td><td>Illustrator, CorelDRAW, Inkscape</td></tr>
+</table></div>
+
+<h2>Grafické formáty — přehled</h2>
+<div class="def-grid">
+<div class="def-t">JPEG</div><div class="def-d">Ztrátová komprese. Skvělý pro fotografie. Každé přeuložení snižuje kvalitu.</div>
+<div class="def-t">PNG</div><div class="def-d">Bezztrátová komprese + průhlednost (alfa kanál). Ideální pro loga na webu.</div>
+<div class="def-t">GIF</div><div class="def-d">Max. 256 barev. Podporuje jednoduché animace. Pro fotografie nevhodný.</div>
+<div class="def-t">SVG</div><div class="def-d">Vektorový formát pro web. Kód v XML — lze editovat textovým editorem.</div>
+<div class="def-t">TIFF</div><div class="def-d">Bezztrátový raster pro profesionální tisk. Obrovské soubory.</div>
+</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč CMYK pro tisk a ne RGB?"</strong> — Monitor vyzařuje světlo (aditivní), tiskárna nanáší inkoust na papír (subtraktivní). RGB barvy nemají přímý ekvivalent v CMYK — převod způsobí změnu barev. Proto se tiskové materiály připravují v CMYK od začátku.</li>
+<li><strong>„Jaký je rozdíl JPEG a PNG?"</strong> — JPEG: ztrátová komprese, malé soubory, skvělé pro fotky, ale každé uložení degraduje kvalitu. PNG: bezztrátová komprese + průhlednost, větší soubory, skvělé pro loga a grafiku s ostrými hranami.</li>
+<li><strong>„Mohu logo vytisknout jako JPEG?"</strong> — Technicky ano, ale špatně. Logo je ideálně vektorové (SVG/AI) — lze ho tisknout v libovolné velikosti bez pixelizace. JPEG logo v billboardové velikosti = rozmazaná katastrofa.</li>
+<li><strong>„Co je alfa kanál?"</strong> — Čtvrtý kanál v 32-bit grafice určující průhlednost každého pixelu. PNG logo s alfa kanálem má průhledné pozadí — lze ho vložit na libovolné barevné pozadí.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Lidé nepochopí rozdíl monitoru a tiskárny. Stáhnout velký JPEG obrázek a roztáhnout ho na leták A4. Na monitoru (72 DPI) krásný — ale z tiskárny (300 DPI) vyleze rozmazaná šmouha. Obrázek má dost pixelů jen pro kvalitní tisk ve velikosti poštovní známky. Proto tisková příprava vyžaduje obrovské zdrojové soubory v CMYK."</div>
+<div class="page-nav"><a href="12.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>SQL JOIN</span></a><a href="14.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Audio – digitalizace</span><span>→</span></a></div>
+</div></body></html>

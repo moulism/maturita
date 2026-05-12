@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 22 – Zpracování a vizualizace dat v IoT</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Zpracování a vizualizace dat v IoT</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 22</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 22 / 24</div>
+  <h1>Zpracování a vizualizace dat v IoT</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>ESP8266 může fungovat jako web server → HTML stránka s teplotou</li><li>Node-RED = vizuální programování (flows/uzly) bez psaní kódu</li><li>Grafana = dashboard pro IoT data (vizualizace)</li><li>InfluxDB = time-series databáze (teplota + časové razítko) — ne MySQL!</li><li>TIG stack: Telegraf + InfluxDB + Grafana = profesionální IoT systém</li></ul></div>
+<h2>Webová prezentace dat ze senzorů</h2>
+<p>ESP8266 umí fungovat jako malý HTTP server. Vytvoří webovou stránku zobrazující aktuální teplotu — připojíme se přes prohlížeč mobilu v místní síti. Pro rozsáhlejší systémy se data posílají na skutečný server (PHP + MySQL nebo InfluxDB).</p>
+
+<h2>Node-RED — vizuální programování IoT</h2>
+<p>Node-RED je vizuální programovací nástroj od IBM. Běží v prohlížeči (nejčastěji na Raspberry Pi). <strong>Téměř se nepíše kód</strong> — programuje se graficky pomocí „flows" (toků).</p>
+<div class="box box-b"><strong>Příklad flow:</strong>
+[MQTT vstup] → přijme teplotu ze senzoru<br>
+[Logika IF] → pokud teplota > 25°C<br>
+[E-mail uzel] → pošli upozornění<br>
+[Grafana uzel] → zobraz v dashboardu</div>
+<p>Použití: centrální mozek chytré domácnosti — propojuje žárovky Philips Hue, senzory, předpověď počasí, alarmy.</p>
+
+<h2>Grafana — vizualizace a dashboardy</h2>
+<p>Open-source SW pro vizualizaci dat. <strong>Sám data nesbírá</strong> — napojí se na databázi (InfluxDB, MySQL, Prometheus) a zobrazuje interaktivní dashboardy. Grafy, budíky, teploměry, alarmy. Ideální pro dohledová centra nebo správce serverů.</p>
+
+<h2>Databáze pro IoT — proč ne MySQL</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>MySQL (relační)</th><th>InfluxDB (time-series)</th></tr>
+<tr><td><strong>Zaměření</strong></td><td>Obecné tabulkové struktury</td><td>Dvojice časové razítko + hodnota</td></tr>
+<tr><td><strong>IoT výkon</strong></td><td>❌ Zhroutí se při 10 000 zápisech/s</td><td>✅ Navržena pro miliony zápisů/s</td></tr>
+<tr><td><strong>Komprese</strong></td><td>Standardní</td><td>Speciální komprese pro časové řady</td></tr>
+<tr><td><strong>Dotazy</strong></td><td>SQL</td><td>InfluxQL nebo Flux</td></tr>
+</table></div>
+
+<h2>TIG Stack — profesionální IoT systém</h2>
+<div class="def-grid">
+<div class="def-t">Telegraf</div><div class="def-d">Agent sbírající data ze senzorů a aplikací, posílá do InfluxDB.</div>
+<div class="def-t">InfluxDB</div><div class="def-d">Time-series databáze — bleskový zápis měřených hodnot.</div>
+<div class="def-t">Grafana</div><div class="def-d">Vizualizační vrstva — krásné interaktivní dashboardy.</div>
+</div>
+
+<h2>Cloud a IoT platformy</h2>
+<p>ThingSpeak, Blynk, AWS IoT, Azure IoT Hub — cloudové platformy, kde senzor jen pošle data a platforma se postará o uložení, zabezpečení a vizualizaci. Nemusíme spravovat vlastní servery.</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč MySQL nevhodné pro IoT?"</strong> — IoT může generovat tisíce zápisů za sekundu (teplota, vlhkost, tlak). MySQL při každém zápisudělá složité indexování — pod takovým náporem se systém zhroutí. InfluxDB je navržena pro masivní zápis časových dat.</li>
+<li><strong>„Co je Node-RED a čím se liší od programování v Pythonu?"</strong> — Node-RED je vizuální — nepíše se kód, ale kreslí se grafický tok zpracování dat. Pro rychlé prototypy a lidi bez programátorského zázemí. Python je textové programování pro složitější logiku.</li>
+<li><strong>„Jaký je rozdíl Grafana a Power BI?"</strong> — Power BI: zaměřený na business analytiku, datové sklady, Excel data. Grafana: zaměřená na real-time monitoring (servery, IoT, metriky), time-series data, open-source.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Pro IoT monitoring se kombinuje TIG stack: data ze senzorů přitečou přes MQTT do Node-RED (validace dat), Node-RED je uloží do InfluxDB (bleskový zápis). Grafana se každou vteřinu dívá do InfluxDB a vykresluje na obrazovce správce krásné grafy. Profesionální, stabilní a snadno spravovatelný systém."</div>
+<div class="page-nav"><a href="21.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Periferní zařízení</span></a><a href="23.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Přenosové sítě IoT</span><span>→</span></a></div>
+</div></body></html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 11 – SQL – DML (Data Manipulation Language)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">SQL – DML (Data Manipulation Language)</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 11</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 11 / 24</div>
+  <h1>SQL – DML (Data Manipulation Language)</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>SELECT pořadí: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY</li><li>INSERT INTO … VALUES | UPDATE … SET … WHERE | DELETE FROM … WHERE</li><li>UPDATE/DELETE bez WHERE = všechny řádky! Vždy s WHERE!</li><li>WHERE: AND, OR, BETWEEN, IN, LIKE (% = cokoliv, _ = jeden znak)</li><li>DISTINCT = unikátní | TOP/LIMIT = omezení | agregace: SUM, COUNT, AVG, MIN, MAX</li></ul></div>
+<h2>DML příkazy</h2>
+<div class="def-grid">
+<div class="def-t">SELECT</div><div class="def-d">Čtení dat. Nejpoužívanější příkaz v SQL.</div>
+<div class="def-t">INSERT INTO</div><div class="def-d">Vkládá nové řádky. <code>INSERT INTO Zakaznici (jmeno, email) VALUES ('Jan', 'jan@example.com')</code></div>
+<div class="def-t">UPDATE</div><div class="def-d">Upravuje existující data. <strong>VŽDY s WHERE!</strong> <code>UPDATE Zakaznici SET stav = 'VIP' WHERE id = 5</code></div>
+<div class="def-t">DELETE</div><div class="def-d">Maže řádky. <strong>VŽDY s WHERE!</strong> <code>DELETE FROM Zakaznici WHERE id = 5</code></div>
+</div>
+
+<div class="box box-r"><strong>Bez WHERE = katastrofa!</strong>
+<code>UPDATE Produkty SET cena = 0</code> — vynuluje ceny VŠECH produktů!<br>
+<code>DELETE FROM Zakaznici</code> — smaže VŠECHNY zákazníky!</div>
+
+<h2>Pořadí zpracování dotazu SELECT</h2>
+<p>Databáze <strong>nezačíná od SELECT</strong>! Skutečné pořadí zpracování:</p>
+<div class="box box-b">
+<strong>FROM</strong> → WHERE → GROUP BY → HAVING → <strong>SELECT</strong> → ORDER BY<br>
+Proto: ve WHERE nelze použít alias definovaný v SELECT (databáze ještě SELECT nezpracovala)!
+</div>
+<pre><span class="kw">SELECT</span>   mesto, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> pocet   <span class="cm">-- 5. co zobrazit</span>
+<span class="kw">FROM</span>     Zakaznici                    <span class="cm">-- 1. odkud</span>
+<span class="kw">WHERE</span>    vek &gt; <span class="nm">18</span>                      <span class="cm">-- 2. filtruj řádky</span>
+<span class="kw">GROUP BY</span> mesto                        <span class="cm">-- 3. seskup</span>
+<span class="kw">HAVING</span>   <span class="fn">COUNT</span>(*) &gt; <span class="nm">10</span>              <span class="cm">-- 4. filtruj skupiny</span>
+<span class="kw">ORDER BY</span> pocet <span class="kw">DESC</span>                  <span class="cm">-- 6. seřaď</span></pre>
+
+<h2>Operátory pro WHERE</h2>
+<div class="def-grid">
+<div class="def-t">AND / OR</div><div class="def-d">AND: obě podmínky musí platit. OR: stačí jedna. Lze kombinovat se závorkami.</div>
+<div class="def-t">BETWEEN</div><div class="def-d"><code>WHERE cena BETWEEN 100 AND 500</code> — včetně hraničních hodnot.</div>
+<div class="def-t">IN</div><div class="def-d"><code>WHERE mesto IN ('Praha', 'Brno', 'Plzeň')</code> — nahrazuje více OR podmínek.</div>
+<div class="def-t">LIKE</div><div class="def-d"><code>%</code> = libovolný počet znaků. <code>_</code> = přesně jeden znak. <code>WHERE jmeno LIKE 'J%'</code> = všechna jména začínající na J.</div>
+</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč nesmí být agregace ve WHERE?"</strong> — WHERE běží PŘED GROUP BY. V tu chvíli žádné součty neexistují. Agregace patří do HAVING, které běží PO seskupení.</li>
+<li><strong>„Co vrátí SELECT * (hvězdička)?"</strong> — Všechny sloupce. V produkci se nedoporučuje — přenáší se zbytečná data přes síť. Vždy vyjmenovat konkrétní sloupce.</li>
+<li><strong>„Co se stane UPDATE bez WHERE?"</strong> — Aktualizuje VŠECHNY řádky v tabulce. Jedna z nejčastějších juniorních chyb s katastrofálními následky.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Studenti si myslí, že databáze čte dotaz od SELECT. Ale pořadí zpracování začíná od FROM — databáze potřebuje vědět, kam jít. Pak WHERE odfiltruje nepotřebná data, GROUP BY seskupí, HAVING odfiltruje skupiny a teprve pak SELECT rozhodne, co zobrazit. Proto alias definovaný v SELECT nelze použít ve WHERE — SELECT ještě neproběhl!"</div>
+<div class="page-nav"><a href="10.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>SQL DDL</span></a><a href="12.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>SQL JOIN</span><span>→</span></a></div>
+</div></body></html>

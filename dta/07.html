@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 07 &ndash; Čtení dat z API a uložení do souboru</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Čtení dat z API a uložení do souboru</span>
+  <span class="topbar-subject-badge badge-dta">DTA 07</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 07 / 15</div>
+  <h1>Čtení dat z API a uložení do souboru</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>API vrací data ve formátu JSON přes HTTP protokol</li>
+<li><code>import requests; r = requests.get(url, timeout=10)</code></li>
+<li><code>r.raise_for_status()</code> &ndash; vyhodí výjimku při chybě 4xx/5xx (klíčový řádek!)</li>
+<li><code>r.json()</code> &ndash; parsuje JSON na Python dict/list</li>
+<li><code>pd.json_normalize(data)</code> &ndash; vnořený JSON do DataFrame</li>
+<li><code>df.to_csv()</code> nebo <code>df.to_json(orient='records')</code></li>
+</ul></div>
+
+<h2>Co je REST API?</h2>
+<p>API (Application Programming Interface) umožňuje programu komunikovat s jiným programem. REST API vrací data ve formátu <strong>JSON</strong> přes HTTP. Příklad: <code>GET https://api.kurzy.cz/v1/mena/</code> vrátí aktuální kurzy měn.</p>
+
+<h2>Čtení dat z API &ndash; kompletní příklad</h2>
+<pre><span class="kw">import</span> requests
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+url = <span class="st">"https://api.example.com/products"</span>
+
+response = requests.get(url, timeout=10)
+response.raise_for_status()   <span class="cm"># KLÍČOVÝ ŘÁDEK: hodí HTTPError při 4xx/5xx</span>
+
+data = response.json()
+df = pd.DataFrame(data)
+
+<span class="cm"># Pro vnořené JSON:</span>
+df = pd.json_normalize(data[<span class="st">'items'</span>])
+
+<span class="cm"># Uložení:</span>
+df.to_csv(<span class="st">'produkty.csv'</span>, index=<span class="kw">False</span>, encoding=<span class="st">'utf-8-sig'</span>)
+df.to_json(<span class="st">'produkty.json'</span>, orient=<span class="st">'records'</span>, force_ascii=<span class="kw">False</span>)</pre>
+
+<h2>Autentizace &ndash; API klíč</h2>
+<pre>headers = {<span class="st">"Authorization"</span>: <span class="st">"Bearer MUJ_KLIC"</span>}
+response = requests.get(url, headers=headers, timeout=10)
+
+params = {<span class="st">"rok"</span>: 2024, <span class="st">"limit"</span>: 100}
+response = requests.get(url, params=params)</pre>
+
+<h2>Ošetření chyb</h2>
+<pre><span class="kw">try</span>:
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+    df = pd.DataFrame(response.json())
+<span class="kw">except</span> requests.exceptions.Timeout:
+    <span class="kw">print</span>(<span class="st">"API neodpovědělo včas"</span>)
+<span class="kw">except</span> requests.exceptions.HTTPError <span class="kw">as</span> e:
+    <span class="kw">print</span>(<span class="st">f"Chyba HTTP: {e}"</span>)</pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč raise_for_status() a ne if status_code == 200?</strong> &ndash; API vrátí chybu 404 jako validní HTTP odpověď. Bez <code>raise_for_status()</code> Python nespadne, snaží se parsovat chybovou stránku jako data a spadne až o kus dál na nesmyslné chybě.</li>
+<li><strong>Co je JSON?</strong> &ndash; JavaScript Object Notation &ndash; textový formát pro výměnu dat. V Pythonu odpovídá dict nebo list. <code>response.json()</code> ho automaticky deserializuje.</li>
+<li><strong>Rozdíl orient=records vs výchozí při to_json()?</strong> &ndash; <code>records</code> uloží jako list of dicts (každý řádek je objekt) &ndash; nejčastěji čitelný formát. Výchozí orientace je sloupcová.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Nejdůležitější řádek: <code>response.raise_for_status()</code> hned po volání API. Bez něj mi kód nespadne při chybě 404 &ndash; místo toho se pokouší parsovat chybovou stránku jako datový zdroj a spadne o kus dál na nesmyslné chybě, která nemá s API nic společného. Tímto jedním řádkem mám vždy okamžité hlášení přesně tam, kde problém nastal.</div>
+
+<div class="page-nav"><a href="06.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Profilace výkonu Python skriptu</span></a><a href="08.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Datová analytika ve společnosti a CRISP-DM</span><span>&rarr;</span></a></div>
+</div></body></html>

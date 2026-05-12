@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 05 &ndash; Statická analýza a lintování kódu</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Statická analýza a lintování kódu</span>
+  <span class="topbar-subject-badge badge-dta">DTA 05</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 05 / 15</div>
+  <h1>Statická analýza a lintování kódu</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Linting = automatická kontrola stylu BEZ spuštění kódu</li>
+<li>PEP 8 = Python standard: 4 mezery, max 79 znaků na řádek</li>
+<li><code>flake8 skript.py</code> &ndash; najde porušení, hlásí ale nemění</li>
+<li><code>black skript.py</code> &ndash; automaticky přeformátuje kód</li>
+<li>Formát chyby: <code>soubor.py:řádek:sloupec: KOD popis</code></li>
+<li>Spouští se z TERMINÁLU, ne z Pythonu!</li>
+</ul></div>
+
+<h2>Co je statická analýza?</h2>
+<p>Linter čte zdrojový kód a hledá problémy <strong>bez spuštění</strong> programu. Odhalí překlepy, nepoužité importy, špatné formátování. V týmu zajišťuje, že kód všech vypadá stejně.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Nástroj</th><th>Co dělá</th><th>Příkaz</th></tr>
+<tr><td><strong>flake8</strong></td><td>Najde porušení PEP8. Hlásí, ale nekód nemění.</td><td><code>flake8 skript.py</code></td></tr>
+<tr><td><strong>pylint</strong></td><td>Hlubší analýza + skóre 0&ndash;10.</td><td><code>pylint skript.py</code></td></tr>
+<tr><td><strong>black</strong></td><td>Formátovač &ndash; automaticky opraví kód.</td><td><code>black skript.py</code></td></tr>
+</table></div>
+
+<h2>Instalace a použití</h2>
+<pre>pip install flake8 black
+
+flake8 muj_skript.py
+<span class="cm"># Výstup:</span>
+<span class="cm"># muj_skript.py:10:5: E225 missing whitespace around operator</span>
+<span class="cm"># muj_skript.py:14:1: W291 trailing whitespace</span>
+
+black muj_skript.py    <span class="cm"># automaticky opraví formátování</span></pre>
+
+<h2>Nejčastější kódy chyb flake8</h2>
+<div class="table-wrap"><table>
+<tr><th>Kód</th><th>Co znamená</th><th>Příklad</th></tr>
+<tr><td><code>E225</code></td><td>Chybí mezera kolem operátoru</td><td><code>x=5</code> &rarr; <code>x = 5</code></td></tr>
+<tr><td><code>E501</code></td><td>Řádek příliš dlouhý (&gt;79 znaků)</td><td>Rozlom pomocí <code>\</code></td></tr>
+<tr><td><code>W291</code></td><td>Mezera na konci řádku</td><td>Smaž trailing space</td></tr>
+<tr><td><code>F401</code></td><td>Import se nepoužívá</td><td><code>import os</code> (nikde nepoužito)</td></tr>
+<tr><td><code>E302</code></td><td>Chybí 2 prázdné řádky před funkcí</td><td>Přidej 2 prázdné řádky</td></tr>
+</table></div>
+
+<h2>Ukázka pro komisi &ndash; záměrně špatný kód</h2>
+<pre><span class="cm"># muj_skript.py:</span>
+<span class="kw">import</span> os       <span class="cm"># F401</span>
+x=5             <span class="cm"># E225</span>
+<span class="kw">print</span>(x)
+
+<span class="cm"># flake8 muj_skript.py vypíše:</span>
+<span class="cm"># muj_skript.py:1:1: F401 'os' imported but unused</span>
+<span class="cm"># muj_skript.py:2:2: E225 missing whitespace around operator</span></pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Co je PEP 8?</strong> &ndash; Python Enhancement Proposal 8 &ndash; oficiální stylový průvodce. Definuje: 4 mezery odsazení (ne tabulátor), max 79 znaků na řádek, 2 prázdné řádky mezi funkcemi.</li>
+<li><strong>Rozdíl flake8 a black?</strong> &ndash; flake8 je linter: hlásí chyby, kód nemění. black je formátovač: kód opravuje automaticky. Kombinují se: flake8 najde logické chyby, black opraví formátování.</li>
+<li><strong>Kde se spouštějí?</strong> &ndash; V TERMINÁLU, ne v Pythonu! flake8 a black jsou terminálové příkazy. To je klasická záludná otázka.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+flake8 a black se spouštějí z příkazové řádky, ne z Pythonu &ndash; to je první záludná otázka. Na ukázku záměrně napíšu do kódu chybu: <code>x=5</code> bez mezer a nepoužitý <code>import os</code>. Pak spustím flake8 &ndash; vypíše chyby ve formátu <code>soubor:řádek:sloupec: KOD popis</code>. Pak spustím black, který kód automaticky opraví.</div>
+
+<div class="page-nav"><a href="04.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Otestování transformační funkce pomocí pytest</span></a><a href="06.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Profilace výkonu Python skriptu</span><span>&rarr;</span></a></div>
+</div></body></html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 06 – Vizualizační metody k řešení obchodních modelů</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Vizualizační metody k řešení obchodních modelů</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 06</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 06 / 24</div>
+  <h1>Vizualizační metody k řešení obchodních modelů</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Koláčový: podíl na celku, max. 5 položek</li><li>Spojnicový: vývoj v čase (trend)</li><li>Sloupcový: srovnání absolutních hodnot</li><li>100% skládaný: relativní podíl v čase</li><li>Dashboard: Z-pattern (důležité vlevo nahoře)</li><li>KPI karta → agregovaný graf → detailní tabulka (od obecného ke konkrétnímu)</li></ul></div>
+<h2>Výběr správného grafu</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ grafu</th><th>Vhodný pro</th><th>Pozor</th></tr>
+<tr><td><strong>Koláčový / výsečový</strong></td><td>Podíl na celku (tržní podíly)</td><td>Max. 3–5 položek! Více = nečitelné</td></tr>
+<tr><td><strong>Spojnicový</strong></td><td>Vývoj v čase, trendy (tržby za rok)</td><td>Osy musí začínat od nuly, jinak klame</td></tr>
+<tr><td><strong>Sloupcový / pruhový</strong></td><td>Srovnání absolutních hodnot (pobočky)</td><td>Seřadit od největší po nejmenší</td></tr>
+<tr><td><strong>100% skládaný sloupec</strong></td><td>Relativní podíl v čase (telefony vs. notebooky v %)</td><td>Nelze vidět absolutní hodnoty</td></tr>
+<tr><td><strong>Tabulkový (matice)</strong></td><td>Přesná čísla, detailní přehled</td><td>Kombinovat s podmíněným formátováním</td></tr>
+</table></div>
+
+<h2>Komponenty dashboardu</h2>
+<div class="def-grid">
+<div class="def-t">KPI karty</div><div class="def-d">Hlavní čísla nahoře (celkový zisk, cíle). Nejdůležitější informace.</div>
+<div class="def-t">Průřezy (filtry)</div><div class="def-d">Umožní uživateli filtrovat celý dashboard (podle regionu, časového období).</div>
+<div class="def-t">Grafy</div><div class="def-d">Vizuální přehled agregovaných dat.</div>
+<div class="def-t">Tabulky</div><div class="def-d">Detailní přehled na úrovni faktur, transakcí.</div>
+</div>
+
+<h2>Pravidla tvorby dashboardu</h2>
+<div class="box box-b"><strong>Z-pattern (nebo F-pattern):</strong> Lidé čtou zleva doprava, shora dolů. Nejdůležitější informace (KPI: celkový zisk) → vlevo nahoře. Méně důležité grafy → dolů a doprava. Detailní tabulka → úplně dole.</div>
+<p><strong>Princip „od obecného ke konkrétnímu":</strong> Nahoře celkové sumy → níže agregované grafy → dole detail transakcí.</p>
+<p><strong>Barvy se smyslem:</strong> Zelená = dobrý výsledek, červená = špatný výsledek. Ale! Pozor na barvoslepost — přidejte šipky nahoru/dolů. Jeden koncept = vždy stejná barva v celém dashboardu.</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč koláčový graf max. 5 položek?"</strong> — S více položkami nelze od sebe vizuálně odlišit malé výseče. Mozek nedokáže přesně porovnat velikosti výsečí. Pro více položek použít sloupcový graf.</li>
+<li><strong>„Co je Z-pattern a proč záleží na umístění?"</strong> — Mozek čte zleva doprava, shora dolů. Pokud je nejdůležitější číslo dole vpravo, uživatel ho nemusí vůbec vidět. Vlevo nahoře = první, kam oko padne.</li>
+<li><strong>„Jaký je rozdíl sloupcový a 100% skládaný?"</strong> — Sloupcový: absolutní hodnoty (v únoru se prodalo X kusů). 100% skládaný: relativní podíly v % (bez ohledu na to, zda se prodalo víc nebo méně celkově).</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Nezkušení analytici dávají na dashboard 15 grafů ve všech barvách. Ve skutečnosti by měl být co nejčistší. Pro ředitele: vlevo nahoře KPI karta s celkovým ziskem (první věc, kterou uvidí), pod tím sloupcový graf poboček, vpravo spojnicový vývoj v čase. Dole detailní tabulka s podmíněným formátováním — červené řádky okamžitě ukazují problém."</div>
+<div class="page-nav"><a href="05.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>DAX</span></a><a href="07.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Datové formáty (API, JSON)</span><span>→</span></a></div>
+</div></body></html>

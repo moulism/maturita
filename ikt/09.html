@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 09 – Datové modelování</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Datové modelování</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 09</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 09 / 24</div>
+  <h1>Datové modelování</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>3 kroky: Konceptuální → Logický → Fyzický model</li><li>Entita (Student) → Atribut (Jméno) → Kardinalita (1:N)</li><li>Primární klíč (PK) = unikátní identifikátor řádku (nikdy NULL)</li><li>Cizí klíč (FK) = odkaz na PK jiné tabulky → vytváří relaci</li><li>1NF: atomické hodnoty | 2NF: závisí na celém PK | 3NF: bez transitivity</li><li>Syntetické ID (1,2,3) = PK, ne e-mail nebo rodné číslo</li></ul></div>
+<h2>Postup při modelování — 3 fáze</h2>
+<div class="def-grid">
+<div class="def-t">1. Konceptuální</div><div class="def-d">Zcela bez technických detailů. Tvoříme s klientem. Výsledek: <strong>ER diagram</strong> (entity, atributy, kardinality). Zákazník rozumí, žádné VARCHAR ani PRIMARY KEY.</div>
+<div class="def-t">2. Logický</div><div class="def-d">Přidáme přesné struktury — klíče, normalizaci. Stále nezávislý na konkrétním SŘBD.</div>
+<div class="def-t">3. Fyzický</div><div class="def-d">Finální stav pro konkrétní databázi. Přesné datové typy (INT, VARCHAR), pravidla smazání, indexy. Výsledkem je SQL skript CREATE TABLE.</div>
+</div>
+
+<h2>Konceptuální model — základní pojmy</h2>
+<div class="def-grid">
+<div class="def-t">Entita</div><div class="def-d">Objekt, o kterém sbíráme data (podstatné jméno): Student, Kniha, Objednávka.</div>
+<div class="def-t">Atribut</div><div class="def-d">Konkrétní vlastnost entity. Student má: Jméno, Příjmení, Datum_narození.</div>
+<div class="def-t">Kardinalita</div><div class="def-d">Množstevní poměr vztahu. 1:N = jeden autor má více knih. M:N = student zapísán v více předmětech.</div>
+</div>
+
+<h2>Klíče — logický model</h2>
+<div class="def-grid">
+<div class="def-t">Kandidátní klíč</div><div class="def-d">Atribut, který může jednoznačně identifikovat řádek. E-mail, rodné číslo. Může jich být víc.</div>
+<div class="def-t">Primární klíč (PK)</div><div class="def-d">Vybraný kandidátní klíč. <strong>Nikdy nesmí být NULL, nesmí se opakovat.</strong> Většinou syntetické auto-incrementované ID.</div>
+<div class="def-t">Cizí klíč (FK)</div><div class="def-d">Sloupec odkazující na PK jiné tabulky. Vytváří relaci — nelze vložit objednávku pro zákazníka, který neexistuje.</div>
+</div>
+
+<h2>Normalizace — proč a co</h2>
+<div class="table-wrap"><table>
+<tr><th>Normální forma</th><th>Pravidlo</th><th>Příklad porušení → oprava</th></tr>
+<tr><td><strong>1NF</strong></td><td>Všechny hodnoty jsou atomické (nedělitelné)</td><td>Do jednoho políčka nepiš "Petr Novák, 777123456" → rozděl do 3 sloupců</td></tr>
+<tr><td><strong>2NF</strong></td><td>Každý sloupec závisí na celém PK (platí u složeného PK)</td><td>U tabulky StudentPředmět nesmí být sloupce patřící jen jedné části klíče</td></tr>
+<tr><td><strong>3NF</strong></td><td>Žádná transitní závislost</td><td>Sloupec "věk" lze odvodit z "data_narozeni" → věk neukládáme, počítáme ho</td></tr>
+</table></div>
+
+<div class="box box-b"><strong>Proč syntetické ID (1, 2, 3) jako PK?</strong>
+E-mail ani rodné číslo nesmí být PK — mění se (zákazník změní adresu, úředně se změní RČ). Kdyby byly PK, změna by rozbila všechny historické vazby na faktury. Syntetické ID se nikdy nezmění.</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč nepoužít e-mail jako PK?"</strong> — E-mail se může změnit. Pokud by byl PK, změna by přerušila všechny cizí klíče odkazující na tento zákazník. Syntetické ID (1, 2, 3) se nikdy nemění.</li>
+<li><strong>„Co je tranzitivní závislost (3NF)?"</strong> — Sloupec závisí na jiném sloupci, který není PK. Příklad: sloupec "jméno_kategorie" závisí na "id_kategorie" (ne přímo na PK tabulky produktů) → přesunout do zvláštní tabulky Kategorie.</li>
+<li><strong>„Jaký je rozdíl konceptuální a fyzický model?"</strong> — Konceptuální: pro klienta, žádné technické detaily, jen entity a vztahy. Fyzický: pro programátory, přesné datové typy, indexy, SQL kód.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Debatuje se, co by mělo být PK. V tabulce zákazníků máme rodné číslo a e-mail. Oba jsou kandidátní klíče. Proč používáme syntetické ID? Protože se věci mění — zákazník může ztratit e-mail nebo se mu úředně změní RČ. Syntetické IDčko 1582 se nikdy nezmění a nevznikne chaos ve vazbách."</div>
+<div class="page-nav"><a href="08.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>SŘBD</span></a><a href="10.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>SQL DDL</span><span>→</span></a></div>
+</div></body></html>

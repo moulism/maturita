@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 18 – VR, AR a Unity – vývojové prostředí</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">VR, AR a Unity – vývojové prostředí</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 18</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 18 / 24</div>
+  <h1>VR, AR a Unity – vývojové prostředí</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>VR = plně virtuální (Meta Quest) | AR = digitální vrstva na reálném světě (Pokémon GO)</li><li>Unity = herní engine, ne 3D modelovací SW</li><li>void Start() = jednou při spuštění | void Update() = každý frame</li><li>RigidBody = fyzikální engine | C# = programovací jazyk Unity</li><li>Time.deltaTime nutné pro pohyb (jinak různá rychlost na různém PC)</li></ul></div>
+<h2>Typy reality</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Co je</th><th>Příklady</th></tr>
+<tr><td><strong>VR (Virtuální realita)</strong></td><td>Uživatel odříznut od reálného světa, plně digitální prostor</td><td>Meta Quest, PlayStation VR, HTC Vive</td></tr>
+<tr><td><strong>AR (Rozšířená realita)</strong></td><td>Digitální prvky zobrazeny přes reálný svět</td><td>Pokémon GO, IKEA Place, Google Maps AR navigace</td></tr>
+<tr><td><strong>Hyper realita (MR)</strong></td><td>Kombinace VR brýlí a fyzických rekvizit — mozek propojí hmat se zrakem</td><td>Herny s VR (fyzické stěny = digitální zdi)</td></tr>
+</table></div>
+
+<h2>Unity — herní engine vs. 3D modelovací SW</h2>
+<div class="box box-b"><strong>Unity NENÍ 3D modelovací SW!</strong>
+V Unity nesocháme modely. Modely vytváříme v Blenderu/3DS MAX → exportujeme jako .FBX → importujeme do Unity. Unity vdechuje modelům „život" — přidává fyziku, logiku, interakci.</div>
+
+<h2>Co Unity umožňuje</h2>
+<div class="def-grid">
+<div class="def-t">Interaktivita</div><div class="def-d">Logika: co se stane při kolizi, kliknutí, stisku klávesy.</div>
+<div class="def-t">Fyzika (RigidBody)</div><div class="def-d">Jedno kliknutí → objekt má hmotnost, gravitaci, odpružení. Bez psaní fyzikálních vzorců.</div>
+<div class="def-t">Materiály a světla</div><div class="def-d">Lesklý/matný povrch, dynamické stíny, odlesky.</div>
+<div class="def-t">Animace (Mecanim)</div><div class="def-d">Přechody mezi stavy animace (chůze → běh → skok) pomocí vizuálního grafu.</div>
+</div>
+
+<h2>Programování v C# — struktura skriptu</h2>
+<pre><span class="kw">using</span> UnityEngine;
+
+<span class="kw">public class</span> <span class="fn">HracovPohyb</span> : MonoBehaviour
+{
+    <span class="kw">public float</span> rychlost = <span class="nm">5f</span>;
+
+    <span class="kw">void</span> <span class="fn">Start</span>()
+    {   <span class="cm">// Spustí se JEDNOU při startu hry</span>
+        Debug.Log(<span class="st">"Hra začíná!"</span>);
+    }
+
+    <span class="kw">void</span> <span class="fn">Update</span>()
+    {   <span class="cm">// Spustí se KAŽDÝ FRAME (30-200× za vteřinu)</span>
+        <span class="kw">float</span> pohyb = Input.GetAxis(<span class="st">"Horizontal"</span>) * rychlost * Time.deltaTime;
+        transform.Translate(pohyb, <span class="nm">0</span>, <span class="nm">0</span>);
+    }
+}</pre>
+
+<div class="box box-r"><strong>Time.deltaTime — proč je to nutné!</strong>
+Bez Time.deltaTime: na PC s 30 FPS = hráč jde 30× 5m = 150 m/s. Na PC s 200 FPS = hráč jde 200× 5m = 1000 m/s! Time.deltaTime vrátí dobu trvání jednoho framu → rychlost bude vždy stejná bez ohledu na výkon PC.</div>
+
+<h2>Využití VR v praxi</h2>
+<ul>
+<li><strong>Medicína:</strong> Trénink operací nanečisto — chirurgen procvičí složitý zákrok bez rizika pro pacienta.</li>
+<li><strong>Vzdělávání:</strong> Virtuální výlet do historického Říma, prohlídka lidského těla zevnitř.</li>
+<li><strong>Průmysl/vojsko:</strong> Letecké simulátory, trénink hasičů ve virtuálním požáru.</li>
+<li><strong>Terapie:</strong> Léčba fobií — postupné vystavování virtuálním pavoukům nebo výškám.</li>
+</ul>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Jaký je rozdíl AR a VR?"</strong> — VR: plně nahrazuje reálný svět digitálním (brýle blokují pohled na okolí). AR: digitální vrstva přidána přes reálný svět (mobil nebo průhledné brýle). Smíchání = Mixed Reality.</li>
+<li><strong>„Proč Time.deltaTime?"</strong> — Update() běží jinak rychle na různých počítačích. Bez Time.deltaTime pohyb závisí na FPS — na rychlém PC hráč letí, na pomalém se plazí. Time.deltaTime normalizuje pohyb na „metrů za sekundu" nezávisle na FPS.</li>
+<li><strong>„Proč Unity a ne Unreal Engine?"</strong> — Unity: C#, jednodušší pro začátečníky, dominuje mobilním hrám a indie hrám. Unreal: C++/Blueprints, fotorealistické AAA hry (Fortnite). Obě jsou v průmyslu standard.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„V Unity skriptu je past s rychlostí pohybu. Napíšete 'posun o 5m'. Na slabém PC s 30 FPS se postava pohne 30×5=150 m/s. Na silném PC s 200 FPS letí 1000 m/s. Řešení: vynásobit Time.deltaTime — vrátí dobu jednoho framu v sekundách. Pohyb pak bude vždy 5 metrů za sekundu bez ohledu na výkon hardware."</div>
+<div class="page-nav"><a href="17.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>3D terminologie</span></a><a href="19.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>IoT</span><span>→</span></a></div>
+</div></body></html>

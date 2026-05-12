@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 10 &ndash; Funkce a moduly v Pythonu</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Funkce a moduly v Pythonu</span>
+  <span class="topbar-subject-badge badge-dta">DTA 10</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 10 / 15</div>
+  <h1>Funkce a moduly v Pythonu</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li><code>def nazev(a, b):</code> &ndash; definice; <code>return</code> vrátí hodnotu</li>
+<li>Funkce (má return) vs Procedura (nemá return, jen provede akci)</li>
+<li>Type hints: <code>def scitani(a: int, b: int) -&gt; int:</code></li>
+<li>Lambda: <code>lambda x: x * 2</code> &ndash; anonymní jednořádková funkce</li>
+<li>Modul = soubor .py s funkcemi; <code>import modul</code> nebo <code>from modul import fce</code></li>
+</ul></div>
+
+<h2>Funkce &ndash; proč je používáme</h2>
+<p>Funkce zabraňuje opakování kódu (DRY &ndash; Don't Repeat Yourself). Pokud budeš počítat DPH na 10 místech skriptu, stačí opravit jednu funkci. Navíc kód je čitelnější: <code>add_vat(df)</code> říká víc než 3 řádky výpočtu.</p>
+
+<h2>Základní syntaxe</h2>
+<pre><span class="kw">def</span> scitani(a: int, b: int) -> int:
+    <span class="kw">return</span> a + b
+
+vysledek = scitani(3, 4)   <span class="cm"># 7</span>
+
+<span class="kw">def</span> tiskni_pozdrav(jmeno: str) -> <span class="kw">None</span>:  <span class="cm"># procedura</span>
+    <span class="kw">print</span>(<span class="st">f"Ahoj, {jmeno}!"</span>)
+
+<span class="kw">def</span> vypocti_dph(cena: float, sazba: float = 0.21) -> float:  <span class="cm"># výchozí hodnota</span>
+    <span class="kw">return</span> cena * (1 + sazba)</pre>
+
+<h2>Try/except uvnitř funkce</h2>
+<pre><span class="kw">def</span> bezpecne_deleni(x: float, y: float) -> float | <span class="kw">None</span>:
+    <span class="kw">try</span>:
+        <span class="kw">return</span> x / y
+    <span class="kw">except</span> ZeroDivisionError:
+        <span class="kw">print</span>(<span class="st">"Nelze dělit nulou!"</span>)
+        <span class="kw">return</span> <span class="kw">None</span></pre>
+
+<h2>Lambda &ndash; anonymní funkce</h2>
+<pre>double = <span class="kw">lambda</span> x: x * 2
+double(5)   <span class="cm"># 10</span>
+
+<span class="cm"># Nejčastější použití jako argument jiné funkce:</span>
+cisla.sort(key=<span class="kw">lambda</span> x: -x)             <span class="cm"># sestupné řazení</span>
+df[<span class="st">'cena_dph'</span>] = df[<span class="st">'cena'</span>].apply(<span class="kw">lambda</span> x: x * 1.21)</pre>
+
+<h2>Moduly &ndash; organizace kódu</h2>
+<pre><span class="cm"># transformace.py:</span>
+<span class="kw">def</span> add_vat(df, col):
+    df[col + <span class="st">'_s_dph'</span>] = df[col] * 1.21
+    <span class="kw">return</span> df
+
+<span class="cm"># Importování:</span>
+<span class="kw">import</span> transformace
+transformace.add_vat(df, <span class="st">'cena'</span>)
+
+<span class="kw">from</span> transformace <span class="kw">import</span> add_vat
+add_vat(df, <span class="st">'cena'</span>)
+
+<span class="kw">from</span> transformace <span class="kw">import</span> add_vat <span class="kw">as</span> dph  <span class="cm"># alias</span></pre>
+
+<h2>Pravidla pojmenování</h2>
+<div class="def-grid">
+<div class="def-t">Povoleno</div><div class="def-d">Písmena, číslice (ne na začátku), podtržítko. <code>vypocti_dph</code>, <code>_private</code></div>
+<div class="def-t">Zakázáno</div><div class="def-d">Začátek číslem, speciální znaky, diakritika, Python klíčová slova (<code>def</code>, <code>class</code>)</div>
+</div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Rozdíl funkce vs procedura?</strong> &ndash; Funkce vrací hodnotu pomocí <code>return</code>. Procedura jen provede akci, nic nevrací (vrátí <code>None</code>). V Pythonu není syntaktický rozdíl &ndash; záleží jen na tom, zda má <code>return</code>.</li>
+<li><strong>Co jsou type hints?</strong> &ndash; Anotace parametrů a návratové hodnoty. Python je nevynucuje, ale pomáhají IDE a linterům odhalit type-chyby a zpřehledňují kód.</li>
+<li><strong>Kdy nepoužít lambdu?</strong> &ndash; Lambda je vhodná pro jednoduché jednořádkové výrazy. Pokud potřebuješ více řádků, podmínky nebo try/except &ndash; použij normální <code>def</code>.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Funkce je základní stavební blok &ndash; DRY princip. Rozlišuji funkci (má <code>return</code>, vrací hodnotu) od procedury (jen provede akci). Type hints Python nevynucuje, ale jsou dobrá praxe. Lambda použiji pro jednoduché výrazy v <code>apply()</code> nebo <code>sort()</code> &ndash; pro složitější logiku vždy <code>def</code>.</div>
+
+<div class="page-nav"><a href="09.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Typy dat a složené datové typy v Pythonu</span></a><a href="11.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>NumPy &ndash; ndarray, indexace, operace</span><span>&rarr;</span></a></div>
+</div></body></html>

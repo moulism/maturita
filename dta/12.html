@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 12 &ndash; Pandas &ndash; DataFrame, import/export, práce s daty</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Pandas &ndash; DataFrame, import/export, práce s daty</span>
+  <span class="topbar-subject-badge badge-dta">DTA 12</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 12 / 15</div>
+  <h1>Pandas &ndash; DataFrame, import/export, práce s daty</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>DataFrame = 2D tabulka (řádky &times; sloupce); Series = jeden sloupec</li>
+<li>Import: <code>read_csv</code>, <code>read_excel</code>, <code>read_sql_query</code>, <code>read_json</code></li>
+<li>Export: <code>to_csv(index=False, encoding='utf-8-sig')</code>, <code>to_excel</code>, <code>to_json</code></li>
+<li>Merge <code>how=</code>: inner, left, right, outer &ndash; jako SQL JOIN</li>
+<li>Řetězení: <code>df.query().rename().groupby().agg()</code></li>
+</ul></div>
+
+<h2>DataFrame vs Series</h2>
+<div class="def-grid">
+<div class="def-t">DataFrame</div><div class="def-d">2D tabulka s popisky řádků (index) a sloupců. Základní struktura pro práci s daty.</div>
+<div class="def-t">Series</div><div class="def-d">1D pole s indexem. Výběr jednoho sloupce: <code>df['cena']</code> vrátí Series.</div>
+</div>
+
+<h2>Import dat</h2>
+<pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.read_csv(<span class="st">'data.csv'</span>, sep=<span class="st">';'</span>, encoding=<span class="st">'utf-8-sig'</span>)
+df = pd.read_excel(<span class="st">'data.xlsx'</span>, sheet_name=<span class="st">'List1'</span>)
+df = pd.read_sql_query(<span class="st">"SELECT * FROM obj"</span>, engine)
+df = pd.read_json(<span class="st">'data.json'</span>)
+
+df.info()       <span class="cm"># typy sloupců, počet NULL</span>
+df.describe()   <span class="cm"># statistiky číselných sloupců</span>
+df.head(10)</pre>
+
+<h2>Export dat</h2>
+<pre>df.to_csv(<span class="st">'vystup.csv'</span>, index=<span class="kw">False</span>, encoding=<span class="st">'utf-8-sig'</span>)
+df.to_excel(<span class="st">'vystup.xlsx'</span>, index=<span class="kw">False</span>, sheet_name=<span class="st">'Data'</span>)
+df.to_json(<span class="st">'vystup.json'</span>, orient=<span class="st">'records'</span>, force_ascii=<span class="kw">False</span>)</pre>
+
+<h2>Merge &ndash; spojení tabulek</h2>
+<pre>df = pd.merge(df_zak, df_obj, on=<span class="st">'id_zak'</span>, how=<span class="st">'left'</span>)</pre>
+<div class="table-wrap"><table>
+<tr><th>how=</th><th>Výsledek</th><th>SQL ekvivalent</th></tr>
+<tr><td><code>'inner'</code></td><td>Jen řádky, kde klíč existuje v OBOU tabulkách</td><td>INNER JOIN</td></tr>
+<tr><td><code>'left'</code></td><td>Všechny z levé + odpovídající z pravé (NULL kde chybí)</td><td>LEFT JOIN</td></tr>
+<tr><td><code>'right'</code></td><td>Všechny z pravé + odpovídající z levé</td><td>RIGHT JOIN</td></tr>
+<tr><td><code>'outer'</code></td><td>Všechny z obou, NULL kde chybí</td><td>FULL OUTER JOIN</td></tr>
+</table></div>
+
+<h2>Řetězení metod</h2>
+<pre>vysledek = (
+    df
+    .query(<span class="st">'vek &gt; 18'</span>)
+    .rename(columns={<span class="st">'jmeno'</span>: <span class="st">'name'</span>})
+    .groupby(<span class="st">'mesto'</span>)[<span class="st">'trzby'</span>]
+    .sum()
+    .sort_values(ascending=<span class="kw">False</span>)
+)</pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč index=False při to_csv()?</strong> &ndash; Pandas automaticky přidá číselný index jako první sloupec. Pro Excel nebo jiné systémy je zbytečný a matoucí.</li>
+<li><strong>Rozdíl concat vs merge?</strong> &ndash; <code>pd.concat()</code> skládá DataFramy na sebe (vertikálně) nebo vedle sebe (horizontálně). <code>pd.merge()</code> spojuje podle společného klíče &ndash; jako SQL JOIN.</li>
+<li><strong>Proč encoding='utf-8-sig' a ne 'utf-8'?</strong> &ndash; <code>utf-8-sig</code> přidá BOM na začátek souboru. Excel ho potřebuje k rozpoznání UTF-8. Bez BOM se čeština zobrazí jako nesmysl.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Pandas DataFrame je tabulka s indexem. Klíčové věci: při importu CSV s češtinou vždy <code>encoding=utf-8-sig</code>, při exportu <code>index=False</code>. Merge funguje jako SQL JOIN &ndash; <code>how=left</code> zachová všechny řádky z levé tabulky i když k nim není shoda vpravo.</div>
+
+<div class="page-nav"><a href="11.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>NumPy &ndash; ndarray, indexace, operace</span></a><a href="13.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Základní popisné statistiky dat</span><span>&rarr;</span></a></div>
+</div></body></html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 07 – Datové formáty a API (JSON, XML, CSV)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Datové formáty a API (JSON, XML, CSV)</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 07</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 07 / 24</div>
+  <h1>Datové formáty a API (JSON, XML, CSV)</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>CSV = text s oddělovačem, malý soubor, ale bez datových typů</li><li>JSON = klíč:hodnota, moderní API standard, lehký</li><li>XML = tagy, přesný a strukturovaný, ale "ukecaný"</li><li>API = most pro výměnu dat mezi aplikacemi (nejčastěji JSON)</li><li>ETL: Extract → Transform (80 % času) → Load</li><li>Power Query zpracovává CSV, JSON, API, Excel, SQL</li></ul></div>
+<h2>Přehled datových formátů</h2>
+<div class="table-wrap"><table>
+<tr><th>Formát</th><th>Výhody</th><th>Nevýhody</th><th>Typické použití</th></tr>
+<tr><td><strong>CSV</strong></td><td>Minimální velikost, přečte každý SW</td><td>Žádné datové typy, problémy s češtinou</td><td>Export z DB, výměna dat</td></tr>
+<tr><td><strong>JSON</strong></td><td>Lehký, čitelný, moderní API standard</td><td>Žádné komentáře, striktní syntaxe</td><td>REST API, webové aplikace</td></tr>
+<tr><td><strong>XML</strong></td><td>Přesný, ověřitelný (XSD schéma)</td><td>„Ukecaný" — tagy zabírají více místa než data</td><td>Státní systémy, účetní SW (Pohoda)</td></tr>
+<tr><td><strong>Excel</strong></td><td>Grafy, vzorce, více listů</td><td>Max. 1M řádků, pomalý pro strojové zpracování</td><td>Lidé, ne stroje</td></tr>
+<tr><td><strong>HTML</strong></td><td>Vizualizace v prohlížeči</td><td>Primárně ne pro přenos surových dat</td><td>Webové stránky</td></tr>
+</table></div>
+
+<h2>JSON — struktura</h2>
+<pre>{
+  <span class="st">"zakaznik"</span>: <span class="st">"Jan Novák"</span>,
+  <span class="st">"vek"</span>: <span class="nm">35</span>,
+  <span class="st">"objednavky"</span>: [
+    { <span class="st">"id"</span>: <span class="nm">1</span>, <span class="st">"cena"</span>: <span class="nm">1500</span> },
+    { <span class="st">"id"</span>: <span class="nm">2</span>, <span class="st">"cena"</span>: <span class="nm">2300</span> }
+  ]
+}</pre>
+
+<h2>API — Application Programming Interface</h2>
+<p>Bezpečný <strong>most</strong>, přes který si dvě aplikace vyměňují data, nejčastěji ve formátu JSON. Power BI se přes API napojí na ČNB a každý den si stáhne aktuální kurz eura.</p>
+
+<h2>ETL proces — Extract, Transform, Load</h2>
+<div class="def-grid">
+<div class="def-t">Extract</div><div class="def-d">Připojení ke zdroji dat (API URL, soubor CSV, SQL databáze).</div>
+<div class="def-t">Transform</div><div class="def-d"><strong>80 % práce!</strong> Určení datových typů, odstranění chyb, prázdných sloupců, nahrazení hodnot, rozbalení JSON struktur.</div>
+<div class="def-t">Load</div><div class="def-d">Načtení čisté tabulky do BI modelu nebo datového skladu.</div>
+</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč CSV nemá datové typy?"</strong> — CSV je jen text. Power Query musí hádat typy ze vzorku prvních 200 řádků. Anglický formát data v českém CSV nebo tečka místo čárky u čísla způsobí chybu importu.</li>
+<li><strong>„Proč XML má XSD schéma?"</strong> — XSD je „předpis" pro strukturu XML. Systém si dokáže data před uložením zkontrolovat — jsou povinná pole vyplněna? Jsou datové typy správné?</li>
+<li><strong>„Co je REST API?"</strong> — Architektura API postavená na HTTP protokolu. GET (čti), POST (vytvoř), PUT (uprav), DELETE (smaž). Odpověď nejčastěji v JSON formátu.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„CSV je nejlehčí a nejrychlejší formát, ale skrývá riziko. Nemá datové typy — vše je jen text. Power Query hádá typy ze vzorku 200 řádků. Pokud se v českém CSV náhodou objeví anglické datum nebo cena s tečkou místo čárky, celý import se zastaví na fatální chybě."</div>
+<div class="page-nav"><a href="06.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Vizualizační metody</span></a><a href="08.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>SŘBD</span><span>→</span></a></div>
+</div></body></html>

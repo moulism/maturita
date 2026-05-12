@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 17 – 3D modelování – terminologie a pojmy</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">3D modelování – terminologie a pojmy</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 17</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 17 / 24</div>
+  <h1>3D modelování – terminologie a pojmy</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Vertex = bod | Edge = hrana | Polygon = plocha | Mesh = celý objekt</li><li>Triangle = 3 hrany (GPU počítá v trojúhelnících)</li><li>Quad = 4 hrany (profesionální modelování, animace)</li><li>Ngon = 5+ hran = ŠPATNĚ → grafické artefakty při animaci</li><li>Spline/Bézier = hladká křivka s kontrolními body</li><li>NURBS = matematicky přesné plochy (karosérie aut)</li></ul></div>
+<h2>Základní stavební prvky 3D modelu</h2>
+<div class="table-wrap"><table>
+<tr><th>Prvek</th><th>Co je</th><th>Poznámka</th></tr>
+<tr><td><strong>Vertex</strong></td><td>Bod v 3D prostoru (souřadnice X,Y,Z)</td><td>Nejmenší stavební jednotka, bez rozměrů</td></tr>
+<tr><td><strong>Edge (hrana)</strong></td><td>Rovná čára spojující 2 vertexy</td><td>Tvoří obrys modelu</td></tr>
+<tr><td><strong>Face (polygon)</strong></td><td>Rovná plocha uzavřená hranami</td><td>„Dlaždice" ze kterých se model skládá</td></tr>
+<tr><td><strong>Mesh (síť)</strong></td><td>Celý 3D objekt = soustava vertexů, hran a polygonů</td><td>Model auta, postavy, budovy</td></tr>
+</table></div>
+
+<h2>Typy polygonů — proč záleží</h2>
+<div class="table-wrap"><table>
+<tr><th>Typ</th><th>Hrany</th><th>Použití</th><th>Problém</th></tr>
+<tr><td><strong>Triangle (Tri)</strong></td><td>3</td><td>GPU počítá výhradně v trojúhelnících</td><td>Horší pro animaci</td></tr>
+<tr><td><strong>Quad</strong></td><td>4</td><td><strong>Standard pro profesionální modelování</strong></td><td>Žádný — ideální pro animaci</td></tr>
+<tr><td><strong>Ngon</strong></td><td>5+</td><td>Vzniká při špatném modelování</td><td><span class="hl hl-r">Grafické artefakty při animaci!</span> Shaders nevědí, jak polygon „zlomit"</td></tr>
+</table></div>
+
+<div class="box box-b"><strong>Proč Quady pro animaci?</strong>
+Model obličeje z Quadů → při úsměvu software plynule ohne tvář podél čtvercové mřížky. Pokud je tam Ngon (7-úhelník) → při ohnutí vzniknou černé stíny a artefakty. Proto profesionální riggers striktně vyžadují „čistou topologii" z Quadů.</div>
+
+<h2>Křivky — Spline a Bézierova křivka</h2>
+<div class="def-grid">
+<div class="def-t">Spline</div><div class="def-d">Hladká křivka definovaná kontrolními body. Na rozdíl od přímých hran se prohýbá. Používá se pro kabely, vlasy, cesty.</div>
+<div class="def-t">Bézierova křivka</div><div class="def-d">Spline s „táhly" u každého kontrolního bodu. Taháním za táhla měníme prohnutí. Stejný princip jako v Adobe Illustratoru (nástroj pero).</div>
+<div class="def-t">Patch</div><div class="def-d">Bézierova křivka rozšířená do 3D plochy. Zakřivené plochy ovládané táhly.</div>
+<div class="def-t">NURBS</div><div class="def-d">Matematicky dokonalé plynulé plochy pro CAD. Karosérie aut, průmyslový design. Interpolace = počítač dopočítá tvar mezi body.</div>
+</div>
+
+<h2>Práce v Blenderu — příklad použití terminologie</h2>
+<p>Tvorba hrníčku: 1) Vložím Mesh (válec) → 2) Edit Mode → 3) Vyberu horní Face a smažu (díra) → 4) Vyberu Edge a Extrude (ouško) → 5) Doladím konkrétní Vertex pro detail. Pro kabel použiji Spline (hladká zakřivená trubka).</p>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Co je topologie modelu?"</strong> — Způsob uspořádání polygonů (zejména Quadů) na modelu. Čistá topologie = pravidelná mřížka Quadů, která se dobře animuje. Špatná topologie = Ngony, trojúhelníky na špatných místech → problémy při animaci.</li>
+<li><strong>„Proč GPU pracuje v trojúhelnících?"</strong> — Trojúhelník je vždy rovinný (3 body definují jednu rovinu). Quad nebo Ngon může být nepravidelný (nerovinný) → GPU ho nejdřív trianguluje. Proto modeláři pracují v Quadech (pro animaci), ale export pro real-time rendering je vždy triangulovaný.</li>
+<li><strong>„Jaký je rozdíl Bézierova křivka a NURBS?"</strong> — Bézierova křivka: lokální kontrola, táhla u každého bodu. NURBS: globálnější matematická interpolace, ideální pro přesné průmyslové povrchy.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„U polygonů se debatuje o Ngonech. Proč profesionálové striktně vyžadují Quady? Model lidského obličeje z Quadů — při úsměvu software plynule ohne tvář podél čtvercové mřížky přirozeně. Pokud je tam Ngon (7-úhelník), software při ohnutí neví, přes kterou úhlopříčku polygon 'zlomit', a na tváři vzniknou černé stíny."</div>
+<div class="page-nav"><a href="16.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>3D grafika</span></a><a href="18.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>VR, AR a Unity</span><span>→</span></a></div>
+</div></body></html>

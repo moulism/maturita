@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 14 &ndash; Transformace dat &ndash; datová kvalita a regex</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Transformace dat &ndash; datová kvalita a regex</span>
+  <span class="topbar-subject-badge badge-dta">DTA 14</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 14 / 15</div>
+  <h1>Transformace dat &ndash; datová kvalita a regex</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Datová kvalita: Správnost, Konzistence, Úplnost, Unikátnost</li>
+<li>NaN = chybějící číslo (NumPy), None = záměrně prázdné, NULL = SQL</li>
+<li>Ošetření: <code>dropna()</code>, <code>fillna(mean)</code>, <code>ffill()</code> (časové řady)</li>
+<li>Regex: <code>\d</code> číslo, <code>\w</code> znak, <code>\s</code> mezera, <code>.</code> cokoliv</li>
+<li>Kvantifikátory: <code>*</code> (0+), <code>+</code> (1+), <code>?</code> (0/1), <code>{n,m}</code></li>
+</ul></div>
+
+<h2>Dimenze datové kvality</h2>
+<div class="table-wrap"><table>
+<tr><th>Dimenze</th><th>Co znamená</th><th>Příklad problému</th></tr>
+<tr><td><strong>Správnost</strong></td><td>Data odpovídají byznysové definici sloupce</td><td>V sloupci věk je hodnota &minus;5 nebo 200</td></tr>
+<tr><td><strong>Konzistence</strong></td><td>Stejná data vypráví stejný příběh ve všech systémech</td><td>Adresa zákazníka se liší v CRM vs účetnictví</td></tr>
+<tr><td><strong>Úplnost</strong></td><td>Povinná pole jsou vyplněná</td><td>50 % zákazníků nemá datum narození</td></tr>
+<tr><td><strong>Unikátnost</strong></td><td>Každý záznam existuje jen jednou</td><td>Duplicitní objednávky po chybě systému</td></tr>
+</table></div>
+
+<h2>Ošetření chybějících hodnot</h2>
+<pre>df.isnull().sum()                          <span class="cm"># počet NULL v každém sloupci</span>
+df.dropna(subset=[<span class="st">'cena'</span>])               <span class="cm"># smaž řádky kde chybí cena</span>
+df[<span class="st">'cena'</span>].fillna(df[<span class="st">'cena'</span>].mean())     <span class="cm"># nahrad průměrem</span>
+df[<span class="st">'kategorie'</span>].fillna(<span class="st">'Neznámá'</span>)        <span class="cm"># nahrad konstantou</span>
+df[<span class="st">'teplota'</span>].fillna(method=<span class="st">'ffill'</span>)    <span class="cm"># forward fill pro časové řady</span></pre>
+
+<h2>Regulární výrazy (Regex)</h2>
+<div class="table-wrap"><table>
+<tr><th>Vzor</th><th>Popis</th><th>Příklad</th></tr>
+<tr><td><code>.</code></td><td>Jakýkoliv jeden znak</td><td><code>a.c</code> &rarr; "abc", "a1c"</td></tr>
+<tr><td><code>\d</code></td><td>Číslice [0-9]</td><td><code>\d{3}</code> &rarr; "123"</td></tr>
+<tr><td><code>\w</code></td><td>Písmeno, číslo nebo _</td><td><code>\w+</code> &rarr; "hello_123"</td></tr>
+<tr><td><code>\s</code></td><td>Mezera, tabulátor</td><td><code>\s+</code> &rarr; "   "</td></tr>
+<tr><td><code>*</code></td><td>0 nebo více</td><td><code>a*</code> &rarr; "", "a", "aaa"</td></tr>
+<tr><td><code>+</code></td><td>1 nebo více</td><td><code>\d+</code> &rarr; "1", "123"</td></tr>
+<tr><td><code>{n,m}</code></td><td>Od n do m výskytů</td><td><code>\d{5}</code> &rarr; PSČ "12345"</td></tr>
+<tr><td><code>^</code></td><td>Začátek řetězce</td><td><code>^Praha</code> &rarr; začíná Prahou</td></tr>
+<tr><td><code>$</code></td><td>Konec řetězce</td><td><code>\.cz$</code> &rarr; končí .cz</td></tr>
+</table></div>
+<pre><span class="kw">import</span> re
+re.match(<span class="st">r"[\w.-]+@[\w.-]+\.\w{2,}"</span>, <span class="st">"jan@firma.cz"</span>)  <span class="cm"># validace emailu</span>
+
+df[df[<span class="st">'psc'</span>].str.match(<span class="st">r"^\d{5}$"</span>)]              <span class="cm"># filtr na validní PSČ</span>
+df[<span class="st">'psc'</span>] = df[<span class="st">'adresa'</span>].str.extract(<span class="st">r"(\d{5})"</span>)  <span class="cm"># extrakce PSČ z adresy</span></pre>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Rozdíl NaN, None, NULL?</strong> &ndash; <code>None</code> je Python objekt. <code>NaN</code> (Not a Number) je float hodnota NumPy pro chybějící numerická data. <code>NULL</code> je SQL. V Pandas je NaN standard pro chybějící data.</li>
+<li><strong>Kdy mazat NULL a kdy imputovat?</strong> &ndash; Maž (dropna) pokud chybí málo dat (&lt;5 %) a ztráta nevadí. Imputuj (fillna průměrem) pokud nechceš ztratit řádky. ffill použij u časových řad.</li>
+<li><strong>Proč raw string r'' u regex?</strong> &ndash; Python by interpretoval <code>\d</code> jako escape sekvenci. S raw stringem <code>r"\d"</code> nechá backslash být a regex engine ho zpracuje správně.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Datová kvalita má čtyři dimenze: správnost, konzistence, úplnost, unikátnost. Při práci s NULL vždy nejprve <code>df.isnull().sum()</code> &ndash; zjistím rozsah problému. Pak rozhodnu: málo chybí &rarr; smažu řádky, hodně chybí &rarr; imputuji průměrem nebo mediánem. Regex použiju pro validaci &ndash; PSČ musí mít přesně 5 číslic: <code>r'^\d{5}$'</code>.</div>
+
+<div class="page-nav"><a href="13.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Základní popisné statistiky dat</span></a><a href="15.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Vizualizace dat &ndash; Matplotlib a Seaborn</span><span>&rarr;</span></a></div>
+</div></body></html>

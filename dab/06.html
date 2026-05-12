@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 06 – T-SQL a procedury</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">T-SQL a procedury</span>
+  <span class="topbar-subject-badge badge-dab">DAB 06</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 06 / 7</div>
+  <h1>T-SQL a uložené procedury</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>T-SQL = SQL + proměnné, IF/ELSE, WHILE, TRY-CATCH (MS SQL Server)</li>
+<li>Stored Procedure = pojmenovaný blok SQL kódu uložený v DB</li>
+<li>CREATE PROCEDURE jmeno AS BEGIN ... END | EXEC jmeno</li>
+<li>Transakce: BEGIN TRAN → test → ROLLBACK nebo COMMIT</li>
+<li>Trigger = procedura spouštěná automaticky po INSERT/UPDATE/DELETE</li>
+</ul></div>
+
+<h2>Co je T-SQL — rozšíření standardního SQL</h2>
+<p>Standardní SQL umí jen základní operace s daty. <strong>T-SQL (Transact-SQL)</strong> je rozšíření od Microsoftu pro MS SQL Server, které z SQL dělá <span class="hl hl-y">plnohodnotný programovací jazyk</span>. Přidává:</p>
+<ul>
+<li>Proměnné: <code>DECLARE @pocet INT = 0</code></li>
+<li>Podmínky: <code>IF @pocet > 0 BEGIN ... END ELSE BEGIN ... END</code></li>
+<li>Cykly: <code>WHILE @i &lt;= 10 BEGIN SET @i += 1 END</code></li>
+<li>Zachytávání chyb: <code>BEGIN TRY ... END TRY BEGIN CATCH ... END CATCH</code></li>
+</ul>
+
+<h2>Uložená procedura (Stored Procedure)</h2>
+<p>Je to pojmenovaný blok SQL kódu <strong>uložený přímo v databázi</strong>. Účetní nemusí umět SQL — jen klikne na tlačítko, aplikace spustí proceduru a ta vygeneruje report.</p>
+<pre><span class="cm">-- Vytvoření procedury</span>
+<span class="kw">CREATE PROCEDURE</span> <span class="fn">Mesicni_Souhrn</span> @mesic <span class="kw">INT</span>, @rok <span class="kw">INT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SELECT</span> zakaznik, <span class="fn">SUM</span>(cena) <span class="kw">AS</span> trzby
+    <span class="kw">FROM</span>   Faktury
+    <span class="kw">WHERE</span>  <span class="fn">MONTH</span>(datum) = @mesic <span class="kw">AND</span> <span class="fn">YEAR</span>(datum) = @rok
+    <span class="kw">GROUP BY</span> zakaznik
+<span class="kw">END</span>
+
+<span class="cm">-- Spuštění procedury</span>
+<span class="kw">EXEC</span> <span class="fn">Mesicni_Souhrn</span> @mesic = <span class="nm">5</span>, @rok = <span class="nm">2025</span></pre>
+
+<h2>Testování procedur pomocí transakcí</h2>
+<p>Hromadné operace se musí testovat nanečisto. <strong>Transakce</strong> umožňuje buď vše potvrdit (COMMIT) nebo vrátit zpět (ROLLBACK):</p>
+<pre><span class="kw">BEGIN TRAN</span>                          <span class="cm">-- spusť nanečisto</span>
+
+<span class="kw">UPDATE</span> Produkty <span class="kw">SET</span> cena = cena * <span class="nm">1.10</span>  <span class="cm">-- zdraž vše o 10 %</span>
+
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> Produkty                <span class="cm">-- zkontroluj výsledek</span>
+
+<span class="cm">-- ROLLBACK    -- pokud je špatně, vrať zpět</span>
+<span class="kw">COMMIT</span>                              <span class="cm">-- pokud OK, potvrď</span></pre>
+
+<h2>Triggery — automatické spuštění</h2>
+<p>Trigger je speciální procedura, která se spustí <strong>automaticky</strong> po INSERT, UPDATE nebo DELETE. Zákazník klikne „Koupit" → do DB se vloží objednávka (INSERT) → trigger automaticky odečte kus ze skladu a odešle e-mail skladníkovi.</p>
+<pre><span class="kw">CREATE TRIGGER</span> <span class="fn">po_objednavce</span>
+<span class="kw">ON</span> Objednavky
+<span class="kw">AFTER INSERT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">UPDATE</span> Sklad <span class="kw">SET</span> mnozstvi -= <span class="nm">1</span>
+    <span class="kw">WHERE</span>  produkt_id = (<span class="kw">SELECT</span> produkt_id <span class="kw">FROM</span> inserted)
+<span class="kw">END</span></pre>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Proč procedury místo přímého SQL?"</strong> — Bezpečnost! Manažer nemá přímý přístup k tabulce platů. Smí spustit jen proceduru Pridej_Premie. Nelze číst ani měnit data libovolně.</li>
+<li><strong>„Jaký je rozdíl procedura a trigger?"</strong> — Proceduru spustí uživatel ručně (EXEC). Trigger se spustí automaticky jako reakce na událost v tabulce.</li>
+<li><strong>„Co ROLLBACK vs COMMIT?"</strong> — ROLLBACK = vrátit vše zpět jako by se nic nestalo. COMMIT = natrvalo potvrdit změny. Bez COMMIT nebo ROLLBACK transakce čeká a blokuje přístup ostatním!</li>
+<li><strong>„Proč TRY-CATCH v proceduře?"</strong> — Zachytí chybu za běhu a místo pádu celé procedury provede záložní akci (zápis do logu chyb, ROLLBACK).</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Procedury mají v byznysu obrovskou výhodu z pohledu bezpečnosti. Místo přímého přístupu k tabulce platů zakážu manažerům přímá práva a vytvořím proceduru 'Pridej_Premie'. Manažer může spustit jen tuto proceduru — a tím garantuji, že s daty stane jen přesně to, co jsem jako programátor povolil uvnitř procedury."</div>
+
+<div class="page-nav">
+<a href="05.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Indexy a rychlost dotazů</span></a>
+<a href="07.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Zabezpečení v databázích</span><span>→</span></a>
+</div>
+</div></body></html>

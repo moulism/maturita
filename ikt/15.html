@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 15 – Video – formáty, kodeky, komprese</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Video – formáty, kodeky, komprese</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 15</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 15 / 24</div>
+  <h1>Video – formáty, kodeky, komprese</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Kodek = algoritmus komprese (H.264, H.265/HEVC) — "dělník"</li><li>Kontejner = obálka/krabice (.MP4, .MKV, .AVI) — obsahuje video+audio+titulky</li><li>Kontejner neovlivňuje kvalitu! Jen balení.</li><li>H.265 = 2× efektivnější než H.264 (stejná kvalita, polovina velikosti)</li><li>Bitrate ovlivní: rozlišení (1080p/4K), FPS, barevná hloubka, komprese</li></ul></div>
+<h2>Kodek vs. Kontejner — zásadní rozdíl!</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Kodek</th><th>Kontejner (formát)</th></tr>
+<tr><td><strong>Co je</strong></td><td>Matematický algoritmus komprese</td><td>„Krabice" — obal pro video+audio+titulky</td></tr>
+<tr><td><strong>Co dělá</strong></td><td>Skutečně komprimuje obraz (vyhazuje redundantní data)</td><td>Sváže video stopu, audio stopu, titulky</td></tr>
+<tr><td><strong>Ovlivňuje kvalitu?</strong></td><td>✅ Ano — zásadně!</td><td>❌ Ne — je jen obal</td></tr>
+<tr><td><strong>Příklady</strong></td><td>H.264, H.265/HEVC, AV1, VP9</td><td>.MP4, .MKV, .AVI, .MOV, .WebM</td></tr>
+</table></div>
+
+<div class="box box-r"><strong>Klasická chyba uživatelů:</strong>
+Stáhnou .MKV film, televize ho nehraje. Přejmenují na .MP4. Pořád nehraje. Proč? Přejmenování mění jen nálepku na krabici — obsah (kodek H.265) uvnitř zůstane stejný. Řešení: konverzní SW (HandBrake) skutečně překóduje obsah.</div>
+
+<h2>Populární kodeky</h2>
+<div class="def-grid">
+<div class="def-t">H.264 (AVC)</div><div class="def-d">Nejrozšířenější. Skvělý poměr kvalita/velikost. Podporovaný absolutně všude.</div>
+<div class="def-t">H.265 (HEVC)</div><div class="def-d">Nástupce H.264. Stejná kvalita při <strong>2× menší velikosti souboru</strong> (nebo lepší kvalita při stejné velikosti). Vyžaduje více CPU pro dekódování.</div>
+<div class="def-t">AV1</div><div class="def-d">Otevřený (royalty-free) nástupce VP9. Ještě efektivnější než H.265. Budoucí standard pro web.</div>
+</div>
+
+<h2>Populární kontejnery</h2>
+<div class="def-grid">
+<div class="def-t">MP4</div><div class="def-d">Vládce internetu. Podporován všude (TV, mobil, web, YouTube). Ideální pro sdílení.</div>
+<div class="def-t">MKV</div><div class="def-d">Otevřený kontejner. Neomezený počet audio stop a titulkových stop. Pro filmy stažené z internetu. Starší TV s ním mají problém.</div>
+<div class="def-t">AVI</div><div class="def-d">Historický formát Microsoftu. Zastaralý — neumí moderní kodeky.</div>
+<div class="def-t">MOV</div><div class="def-d">Formát Apple. iPhony natáčejí v MOV (nebo HEVC v MP4).</div>
+<div class="def-t">WebM</div><div class="def-d">Google formát pro prohlížeče. Volný (bez licenčních poplatků). VP8/VP9 kodeky.</div>
+</div>
+
+<h2>Co ovlivňuje velikost/kvalitu videa</h2>
+<ul>
+<li><strong>Rozlišení:</strong> 1080p vs. 4K → 4× více pixelů → 4× větší soubor</li>
+<li><strong>FPS:</strong> 24 fps (film) vs. 60 fps (sport) → 2,5× větší soubor</li>
+<li><strong>Barevná hloubka:</strong> 8-bit vs. HDR 10-bit</li>
+<li><strong>Kodek a jeho nastavení</strong> (agresivita komprese)</li>
+<li><strong>Audio stopa</strong> (AAC 192 kbps vs. 5.1 Surround)</li>
+</ul>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč přejmenování .MKV na .MP4 nepomůže?"</strong> — Kontejner je jen krabice. Obsah (kodek) zůstane stejný. Televize neumí přehrát H.265 v MKV — ani MP4 to nevyřeší. Nutné skutečné překódování pomocí SW.</li>
+<li><strong>„Jaký je rozdíl H.264 a H.265?"</strong> — H.265 je 2× efektivnější — stejná vizuální kvalita při poloviční velikosti souboru (nebo 2× lepší kvalita při stejné velikosti). Nevýhoda: H.265 potřebuje více CPU pro dekódování → starší zařízení zatuhnout.</li>
+<li><strong>„Co je GOP (Group of Pictures)?"</strong> — Video neukládá každý snímek kompletně. Keyframe (I-frame) je plný snímek, P-frame a B-frame ukládají jen rozdíly oproti předchozímu/následujícímu. Proto rychlé přetáčení videa je pomalejší než běžné přehrávání.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„Uživatelé zaměňují kontejner a kodek. Bedna s nápisem 'Němčina', přeškrtneme, napíšeme 'Čeština' — obsah uvnitř pořád mluví německy. Stejně tak .MKV přejmenované na .MP4 stále obsahuje H.265 kodek. Televize, která H.265 neumí, ho nepřehraje ani v MP4 obalu. Nutné překódování pomocí HandBrake."</div>
+<div class="page-nav"><a href="14.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Audio – digitalizace</span></a><a href="16.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>3D grafika</span><span>→</span></a></div>
+</div></body></html>

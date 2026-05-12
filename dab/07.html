@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 07 – Zabezpečení v databázích</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Zabezpečení v databázích</span>
+  <span class="topbar-subject-badge badge-dab">DAB 07</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 07 / 7</div>
+  <h1>Zabezpečení v databázích</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>Databáze = „korunovační klenoty firmy" → GDPR, obchodní tajemství</li>
+<li>RBAC = práva se nastavují Rolím, ne konkrétním lidem</li>
+<li>Granularita: databáze → tabulka → řádek (RLS) → sloupec</li>
+<li>GRANT (přiděl) / REVOKE (odeber) práva</li>
+<li>Audit log = kdo, kdy, z jaké IP, co změnil</li>
+<li>Princip nejmenšího privilegia = jen minimum práv potřebných pro práci</li>
+</ul></div>
+
+<h2>Proč je bezpečnost v databázích důležitá</h2>
+<p>Databáze je pro firmu <span class="hl hl-r">„korunovační klenoty"</span> — nejcennější část systému. Bezpečnost řešíme ze dvou důvodů:</p>
+<ul>
+<li><strong>Ochrana byznysu:</strong> Únik ceníků nebo klientské databáze ke konkurenci může firmu zničit.</li>
+<li><strong>Zákonné požadavky:</strong> GDPR striktně nařizuje chránit osobní údaje (PII). Za porušení hrozí pokuta až 4 % celosvětového obratu nebo 20 milionů EUR.</li>
+</ul>
+
+<h2>Role vs. Uživatelé — systém RBAC</h2>
+<p><strong>RBAC (Role-Based Access Control)</strong> je základní kámen bezpečnosti:</p>
+<div class="box box-b"><strong>Zlaté pravidlo:</strong> Práva se <em>nikdy</em> nenastavují konkrétním lidem! Práva se nastavují <strong>Roli</strong>. Uživatelé se přiřazují do rolí a dědí jejich práva.</div>
+<div class="def-grid">
+<div class="def-t">Uživatel</div><div class="def-d">Konkrétní osoba nebo aplikace (Jan Novák, webová aplikace)</div>
+<div class="def-t">Role</div><div class="def-d">Skupina oprávnění (role „Účetní", role „IT_Admin", role „Skladník"). Nová zaměstnankyně → přiřadí se do role → automaticky zdědí všechna práva.</div>
+</div>
+
+<h2>Granularita oprávnění — jak jemně lze práva „krájet"</h2>
+<div class="table-wrap"><table>
+<tr><th>Úroveň</th><th>Co kontroluje</th><th>Příklad</th></tr>
+<tr><td><strong>Databáze</strong></td><td>Může se uživatel vůbec připojit?</td><td>Skladník nemá přístup do HR systému</td></tr>
+<tr><td><strong>Tabulka</strong></td><td>Může otevřít danou tabulku?</td><td>Marketér vidí produkty, ne platy</td></tr>
+<tr><td><strong>Řádek (RLS)</strong></td><td>Row-Level Security — vidí jen „své" záznamy</td><td>Student vidí jen svůj řádek, učitel celou třídu</td></tr>
+<tr><td><strong>Sloupec</strong></td><td>Konkrétní sloupce jsou skryty</td><td>Recepční vidí jméno, ale ne číslo kreditní karty</td></tr>
+</table></div>
+
+<h2>Systémová vs. uživatelská práva</h2>
+<div class="def-grid">
+<div class="def-t">Systémová práva</div><div class="def-d">Manipulace se serverem — vytváření databází, přidávání uživatelů, zálohování. Jen administrátor (role <code>sysadmin</code>).</div>
+<div class="def-t">Uživatelská práva</div><div class="def-d">Manipulace s daty — SELECT, INSERT, UPDATE, DELETE. Běžní zaměstnanci a aplikace.</div>
+</div>
+<pre><span class="kw">GRANT</span>  <span class="kw">SELECT</span> <span class="kw">ON</span> Produkty <span class="kw">TO</span> role_Prodejce   <span class="cm">-- přiděl čtení</span>
+<span class="kw">REVOKE</span> <span class="kw">DELETE</span> <span class="kw">ON</span> Produkty <span class="kw">FROM</span> role_Prodejce  <span class="cm">-- odeber mazání</span></pre>
+
+<h2>Monitorování a audit</h2>
+<p>Databázový <strong>Audit Log</strong> zaznamenává každou akci: Kdo, Kdy, Z jaké IP adresy, Co přesně udělal. Business příklad: někdo změnil částku na faktuře u velkého dodavatele — z auditu přesně dohledáme, ze kterého účtu k úpravě došlo, klíčové pro vyšetřování podvodů.</p>
+
+<h2>Odebrání oprávnění při odchodu zaměstnance</h2>
+<p>Zaměstnanec podá výpověď → účet se nesmí smazat (zachování historie v audit logu), ale musí se okamžitě <strong>deaktivovat</strong> (DISABLE) nebo REVOKE práv. Jinak hrozí, že se z domova připojí a ze msty smaže tabulky.</p>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Co je princip nejmenšího privilegia?"</strong> — Každý uživatel dostane jen absolutní minimum práv, která nezbytně potřebuje. Webová aplikace zobrazující katalog → pouze SELECT. Nikoliv UPDATE nebo DELETE. Kdyby hacker pronikl přes SQL injection, může maximálně přečíst veřejný ceník, ne nic smazat.</li>
+<li><strong>„Proč nenastavovat práva přímo uživateli?"</strong> — Při odchodu zaměstnance stačí ho odebrat z role. Bez rolí bychom museli procházet každou tabulku a ručně odebírat práva — v rozsáhlém systému nereálné.</li>
+<li><strong>„Co je SQL Injection?"</strong> — Útočník vloží do formuláře SQL kód místo dat. Pokud aplikace data neošetří, databáze kód spustí. Ochrana: parametrizované dotazy, nikdy nestavět dotaz spojováním stringů.</li>
+<li><strong>„Proč účet nesmazat, ale jen deaktivovat?"</strong> — Audit log musí zůstat konzistentní. Pokud smažeme uživatele, záznamy v logu odkazující na něho by ztratily kontext. Deaktivace zachová historii.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„V bezpečnosti IT existuje zlaté pravidlo — Princip nejmenšího privilegia (Principle of Least Privilege). Každý uživatel a každá aplikace by měli dostat jen absolutní minimum práv, která nezbytně potřebují. Webová aplikace zobrazující katalog dostane jen SELECT. Kdyby na ni zaútočil hacker přes SQL Injection, díky tomuto principu maximálně přečte veřejný ceník — nemůže nic smazat ani měnit."</div>
+
+<div class="page-nav">
+<a href="06.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>T-SQL a procedury</span></a>
+<span></span>
+</div>
+</div></body></html>

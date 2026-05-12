@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 05 – Indexy a rychlost dotazů</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Indexy a rychlost dotazů</span>
+  <span class="topbar-subject-badge badge-dab">DAB 05</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 05 / 7</div>
+  <h1>Indexy a rychlost dotazů</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>Index = rejstřík v knize — rychlé vyhledání bez procházení všech stránek</li>
+<li>Zrychluje SELECT | Zpomaluje INSERT, UPDATE, DELETE</li>
+<li>Typy: Clustered (1x na tabulku, fyzické řazení) | Non-clustered | Unique</li>
+<li>EXPLAIN / Execution Plan → Table Scan = špatné | Index Seek = dobré</li>
+<li>Příliš mnoho indexů = pomalý zápis + zbytečné místo na disku</li>
+</ul></div>
+
+<h2>Co je index a jak funguje</h2>
+<p>Index v databázi funguje jako <span class="hl hl-y">věcný rejstřík na konci tlusté knihy</span>. Bez rejstříku musíte přečíst každou stránku (Table Scan — extrémně pomalé). S rejstříkem se podíváte na písmeno S, zjistíte, že SQL je na straně 150, a otevřete knihu rovnou tam (Index Seek — bleskové).</p>
+<p><strong>Business příklad:</strong> E-shop s milionem klientů. Hledám zákazníka podle e-mailu. S indexem = milisekunda. Bez indexu = server na několik vteřin zamrzne.</p>
+
+<h2>Kdy index pomůže a kdy škodí</h2>
+<div class="table-wrap"><table>
+<tr><th>Operace</th><th>Vliv indexu</th><th>Proč</th></tr>
+<tr><td><code>SELECT</code> (čtení)</td><td><span class="hl hl-g">✅ Dramaticky zrychluje</span></td><td>Databáze jde přímo na správné místo</td></tr>
+<tr><td><code>INSERT</code> (vkládání)</td><td><span class="hl hl-r">⚠️ Zpomaluje</span></td><td>Index se musí aktualizovat u každého nového záznamu</td></tr>
+<tr><td><code>UPDATE</code> (úprava)</td><td><span class="hl hl-r">⚠️ Zpomaluje</span></td><td>Starý záznam se z indexu odstraní, nový se přidá</td></tr>
+<tr><td><code>DELETE</code> (mazání)</td><td><span class="hl hl-r">⚠️ Zpomaluje</span></td><td>Záznam musí být odstraněn i z indexu</td></tr>
+</table></div>
+
+<h2>Typy indexů</h2>
+<div class="def-grid">
+<div class="def-t">Clustered Index</div><div class="def-d"><strong>Fyzicky řadí data na disku</strong> v pořadí indexu. Každá tabulka může mít jen JEDEN. Typicky na ID (primárním klíči). Data jsou fyzicky seřazená jako stránky v knize.</div>
+<div class="def-t">Non-clustered Index</div><div class="def-d">Vytvoří <strong>oddělený rejstřík</strong> ukazující na fyzická data. Může jich být více. Používá se pro sloupce, podle kterých se hodně vyhledává (e-mail, příjmení).</div>
+<div class="def-t">Unique Index</div><div class="def-d">Zaručuje rychlé vyhledání a navíc <strong>zakáže duplicitní hodnoty</strong>. Business: nasazuje se na sloupec E-mail — dva zákazníci nesmějí mít stejnou adresu.</div>
+<div class="def-t">Composite Index</div><div class="def-d">Index na <strong>více sloupcích</strong> najednou. <code>CREATE INDEX ON Objednavky(zakaznik_id, datum)</code> — efektivní pokud hledáme vždy podle obou sloupců.</div>
+</div>
+
+<h2>Jak zjistit, zda dotaz index používá</h2>
+<p>Použijeme příkaz <code>EXPLAIN</code> (MySQL) nebo <strong>Execution Plan</strong> (MS SQL). Grafický strom ukáže, jak databáze dotaz pochopila:</p>
+<div class="box box-b"><strong>Index Seek</strong> = databáze šla přímo do indexu ✅ Výborně!<br>
+<strong>Index Scan</strong> = prošla celý index — trochu lepší než Table Scan<br>
+<strong>Table Scan</strong> = prošla celou tabulku řádek po řádku ❌ Problém — přidej index!</div>
+<p>Business: slouží pro kontrolu, proč se měsíční report generuje 5 minut místo 5 vteřin.</p>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Přidám index na všechny sloupce — je to dobré?"</strong> — Špatně! Každý index fyzicky zabírá místo na disku (někdy více než samotná data) a zpomaluje každý INSERT/UPDATE/DELETE. Více indexů = pomalejší zápis.</li>
+<li><strong>„Kdy NEPOUŽÍVAT index?"</strong> — Na malých tabulkách (databáze stejně projde vše). Na sloupcích s málo unikátními hodnotami (pohlaví M/F — index nepomůže). Na tabulkách s extrémně vysokou frekvencí zápisů (IoT senzory).</li>
+<li><strong>„Co je to Table Scan?"</strong> — Databáze prochází každý řádek tabulky jeden po druhém, jako kdybyste hledali slovo v knize bez rejstříku a četli každou stránku.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Index není zadarmo — je to vždy kompromis. Pro archivační systém, kam se zřídka nahrávají smlouvy ale tisíce lidí v nich vyhledává, nasadím indexů hodně. Pro tabulku IoT senzorů, které zapisují teplotu tisíckrát za vteřinu, nesmím dát skoro žádný — neustálý přepočet indexu by databázi zablokoval."</div>
+
+<div class="page-nav">
+<a href="04.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Práce s výrazy (CASE, CAST)</span></a>
+<a href="06.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>T-SQL a procedury</span><span>→</span></a>
+</div>
+</div></body></html>

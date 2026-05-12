@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 24 – Programování IoT zařízení (Arduino/ESP)</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Programování IoT zařízení (Arduino/ESP)</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 24</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 24 / 24</div>
+  <h1>Programování IoT zařízení (Arduino/ESP)</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong><ul><li>Jazyk: C++ (zjednodušený), IDE = Arduino IDE</li><li>void setup() = jednou při startu | void loop() = nekonečná smyčka</li><li>pinMode() = nastavení pinu | digitalWrite() = výstup | digitalRead() = vstup</li><li>delay(ms) = pauza programu | millis() = čas od startu (non-blocking!)</li><li>Serial.print() = ladění přes USB | #include = import knihovny</li></ul></div>
+<h2>Programovací jazyk a struktura</h2>
+<p>Pro Arduino a ESP desky se používá jazyk vycházející z <strong>C a C++</strong>, zjednodušený o předpřipravené funkce pro práci s hardwarem. Každý program (Sketch) musí obsahovat dvě základní funkce:</p>
+
+<div class="table-wrap"><table>
+<tr><th>Funkce</th><th>Kdy se spustí</th><th>Typický obsah</th></tr>
+<tr><td><code>void setup()</code></td><td>Jednou při startu nebo resetu</td><td>Nastavení rychlostí portů, režimů pinů</td></tr>
+<tr><td><code>void loop()</code></td><td>Nekonečná smyčka (tisíckrát za sekundu)</td><td>Čtení senzorů, řízení výstupů, odesílání dat</td></tr>
+</table></div>
+
+<h2>Základní příkazy pro I/O piny</h2>
+<div class="def-grid">
+<div class="def-t">pinMode(pin, mode)</div><div class="def-d">Nastavuje pin jako vstup (INPUT) nebo výstup (OUTPUT). Píše se do setup().</div>
+<div class="def-t">digitalWrite(pin, val)</div><div class="def-d">Nastaví výstupní pin na HIGH (5V/zapnuto) nebo LOW (0V/vypnuto). Pro LED, relé.</div>
+<div class="def-t">digitalRead(pin)</div><div class="def-d">Přečte stav vstupního pinu. Vrátí HIGH nebo LOW. Pro tlačítka.</div>
+<div class="def-t">analogRead(pin)</div><div class="def-d">Přečte analogovou hodnotu (0–1023). Pro fotorezistory, potenciometry.</div>
+<div class="def-t">analogWrite(pin, val)</div><div class="def-d">PWM výstup (0–255). Stmívání LED, řízení rychlosti motoru.</div>
+</div>
+
+<h2>Ukázkový program — blikající LED se senzorem</h2>
+<pre><span class="kw">#include</span> &lt;DHT.h&gt;                  <span class="cm">// import knihovny pro senzor</span>
+DHT dht(<span class="nm">2</span>, DHT11);               <span class="cm">// senzor na pin 2</span>
+<span class="kw">const int</span> ledPin = <span class="nm">13</span>;
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+    dht.begin();
+    <span class="fn">pinMode</span>(ledPin, OUTPUT);
+    Serial.<span class="fn">begin</span>(<span class="nm">9600</span>);          <span class="cm">// pro Serial Monitor</span>
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+    <span class="kw">float</span> temp = dht.<span class="fn">readTemperature</span>();
+    Serial.<span class="fn">println</span>(temp);         <span class="cm">// zobraz v terminálu</span>
+    
+    <span class="kw">if</span> (temp &gt; <span class="nm">25.0</span>) {
+        <span class="fn">digitalWrite</span>(ledPin, HIGH);  <span class="cm">// rozsvít LED</span>
+    } <span class="kw">else</span> {
+        <span class="fn">digitalWrite</span>(ledPin, LOW);
+    }
+    <span class="fn">delay</span>(<span class="nm">1000</span>);                    <span class="cm">// čekej 1 sekundu</span>
+}</pre>
+
+<h2>delay() vs. millis() — non-blocking</h2>
+<div class="box box-r"><strong>delay() ZASTAVÍ celý program!</strong>
+Pokud Arduino čeká delay(5000) = 5 sekund, nemůže během té doby nic jiného dělat. Tlačítko stisknuto uprostřed delay() = zaignorováno!<br><br>
+<strong>millis()</strong> vrátí počet ms od startu desky. Pomocí porovnání (<code>if (millis() - lastTime > 5000)</code>) lze dělat více věcí zároveň bez blokování.</div>
+
+<h2>Arduino IDE — nastavení</h2>
+<div class="def-grid">
+<div class="def-t">Vývojová deska</div><div class="def-d">Nástroje → Vývojová deska → vybrat Arduino Uno / ESP32 / ESP8266. Nutné doinstalovat podporu pro ESP!</div>
+<div class="def-t">Port</div><div class="def-d">Nástroje → Port → vybrat správný COM port. Bez správného portu kód nelze nahrát.</div>
+<div class="def-t">Serial Monitor</div><div class="def-d">Okno pro komunikaci s deskou přes USB. Serial.print() zobrazuje debugovací zprávy a naměřené hodnoty.</div>
+</div>
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong><ul>
+<li><strong>„Proč delay() je problém v reálných projektech?"</strong> — delay() blokuje celý procesor. Pokud čekám 5 sekund, tlačítko stisknuto v tu dobu = nezaregistrováno. Řešení: millis() — non-blocking čekání (stejný princip jako setTimeout v Javascriptu).</li>
+<li><strong>„Jaký je rozdíl digitalRead a analogRead?"</strong> — digitalRead: pouze HIGH (5V) nebo LOW (0V) — binární. analogRead: hodnota 0–1023 odpovídající napětí 0–5V. Fotorezistor mění odpor podle světla → napětí se mění → analogRead vrátí číslo od 0 do 1023.</li>
+<li><strong>„Co jsou knihovny a proč je používáme?"</strong> — Hotový kód pro komplikovaný hardware (DHT11 senzor, servo, OLED displej). Bez knihovny bychom museli naprogramovat složitý komunikační protokol pro každý senzor od nuly. #include = import knihovny.</li>
+</ul></div>
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>„V Arduino skriptu se pohyb postavy ve hře nesmí řídit příkazem 'posun o 5m' v každém volání loop(). Na pomalém PC s 30 FPS = 150 m/s, na rychlém s 200 FPS = 1000 m/s. U Unity je řešení Time.deltaTime, u Arduina je analogie millis() — počítáme čas od posledního pohybu a pohybujeme o hodnotu úměrnou uplynulému času."</div>
+<div class="page-nav"><a href="23.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Přenosové sítě</span></a><span></span></div>
+</div></body></html>

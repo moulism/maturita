@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAB 03 – Poddotazy a složené dotazy</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← DAB</a>
+  <span class="topbar-title">Poddotazy a složené dotazy</span>
+  <span class="topbar-subject-badge badge-dab">DAB 03</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DAB · OTÁZKA 03 / 7</div>
+  <h1>Poddotazy a složené dotazy</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul>
+<li>Poddotaz = dotaz v závorce uvnitř jiného dotazu</li>
+<li>Nekorelovaný = spustí se JEDNOU (rychlý)</li>
+<li>Korelovaný = spustí se pro každý řádek (pomalý → nahradit JOINem)</li>
+<li>UNION = sloučí + odstraní duplikáty | UNION ALL = sloučí vše (rychlejší)</li>
+<li>EXISTS = zkontroluje existenci (první shoda = hotovo)</li>
+</ul></div>
+
+<h2>Co je poddotaz (Subquery)</h2>
+<p>Poddotaz je <span class="hl hl-y">„dotaz uvnitř jiného dotazu"</span>, zapisuje se do kulatých závorek. Používá se, když pro filtraci potřebujeme hodnotu, kterou sami neznáme a databáze si ji musí nejdřív spočítat.</p>
+<pre><span class="cm">-- Ve WHERE: zákazníci s útratou nad průměr</span>
+<span class="kw">SELECT</span> jmeno, utrata
+<span class="kw">FROM</span>   Zakaznici
+<span class="kw">WHERE</span>  utrata &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(utrata) <span class="kw">FROM</span> Zakaznici)
+
+<span class="cm">-- Ve FROM: poddotaz jako dočasná tabulka</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> (<span class="kw">SELECT</span> zakaznik, <span class="fn">SUM</span>(cena) <span class="kw">AS</span> celkem
+              <span class="kw">FROM</span> Objednavky <span class="kw">GROUP BY</span> zakaznik) <span class="kw">AS</span> souhrn
+<span class="kw">WHERE</span>  celkem &gt; <span class="nm">5000</span></pre>
+
+<h2>Korelovaný vs. nekorelovaný poddotaz</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Nekorelovaný</th><th>Korelovaný</th></tr>
+<tr><td><strong>Závislost</strong></td><td>Nezávislý na vnějším dotazu</td><td>Odkazuje se na vnější dotaz</td></tr>
+<tr><td><strong>Kolikrát se spustí</strong></td><td><span class="hl hl-g">Jednou</span> — vrátí jednu hodnotu</td><td><span class="hl hl-r">Pro každý řádek</span> vnějšího dotazu!</td></tr>
+<tr><td><strong>Výkon</strong></td><td>Rychlý</td><td>Pomalý — „zabiják výkonu"</td></tr>
+<tr><td><strong>Řešení</strong></td><td>Ideální</td><td>Nahradit JOINem</td></tr>
+</table></div>
+
+<h2>UNION vs. UNION ALL</h2>
+<p>Nespojují tabulky vedle sebe (to dělá JOIN) — skládají výsledky <strong>pod sebe</strong>.</p>
+<div class="def-grid">
+<div class="def-t">UNION</div><div class="def-d">Sloučí výsledky a <strong>odstraní duplicity</strong>. Pomalejší — databáze musí porovnávat záznamy. Business: sloučení zákazníků z české a slovenské DB bez duplicit.</div>
+<div class="def-t">UNION ALL</div><div class="def-d">Sloučí výsledky <strong>surově bez odstraňování duplicit</strong>. Bleskově rychlé. Business: kompletní přehled transakcí ze dvou systémů (duplikáty nevadí).</div>
+</div>
+
+<h2>Příkazy ANY, ALL, EXISTS</h2>
+<div class="def-grid">
+<div class="def-t">EXISTS</div><div class="def-d">Zkontroluje, jestli poddotaz vrací alespoň jeden řádek. Jakmile narazí na první shodu, přestane hledat — extrémně rychlé. <code>WHERE EXISTS (SELECT 1 FROM Objednavky WHERE zakaznik_id = z.id)</code></div>
+<div class="def-t">ANY</div><div class="def-d">Platí, pokud podmínka platí alespoň pro jednu hodnotu ze seznamu. <code>cena > ANY (SELECT cena FROM Kategorie)</code></div>
+<div class="def-t">ALL</div><div class="def-d">Platí jen pokud podmínka platí pro VŠECHNY hodnoty. <code>cena > ALL (SELECT cena FROM Prislusenstvi)</code> = dražší než úplně všechno příslušenství.</div>
+</div>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Proč jsou korelované poddotazy problém?"</strong> — Databáze spustí poddotaz pro každý řádek zvlášť. Tabulka s milionem objednávek = milion poddotazů. Report, který by s JOINem trval 0,5s, může trvat 10 minut a zablokovat server.</li>
+<li><strong>„Kdy UNION ALL místo UNION?"</strong> — Vždy když nám duplikáty nevadí a chceme rychlost. UNION musí porovnávat záznamy pro odstranění duplicit = extra operace.</li>
+<li><strong>„Rozdíl EXISTS a IN?"</strong> — EXISTS je rychlejší pro velké datasety, protože zastaví hledání hned při první shodě. IN musí nejprve sestavit celý seznam hodnot z poddotazu.</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„V produkčním prostředí jsou korelované poddotazy noční můrou — říká se jim 'zabijáci výkonu'. Report stotisíc objednávek: s korelovaným poddotazem databáze zpracuje první objednávku, spustí celý poddotaz. Pak druhou, zase spustí poddotaz. Report, který by s JOINem prosvišťel za půl vteřiny, se může generovat deset minut a zablokuje server ostatním uživatelům."</div>
+
+<div class="page-nav">
+<a href="02.html" class="nav-btn prev"><span>←</span><span><span class="nav-btn-label">Předchozí</span>Skupinové dotazy</span></a>
+<a href="04.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Práce s výrazy (CASE, CAST)</span><span>→</span></a>
+</div>
+</div></body></html>

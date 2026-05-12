@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IKT 01 – Bezpečný pohyb v kyberprostoru</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">← IKT</a>
+  <span class="topbar-title">Bezpečný pohyb v kyberprostoru</span>
+  <span class="topbar-subject-badge badge-ikt">IKT 01</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">IKT · OTÁZKA 01 / 24</div>
+  <h1>Bezpečný pohyb v kyberprostoru</h1>
+  <span class="time-badge">⏱ ~15 minut</span></div>
+
+<div class="box box-g"><strong>📝 Potítko – napiš si na papír</strong>
+<ul><li>Silná hesla + správce hesel + MFA/2FA</li><li>Zálohy 3-2-1 (3 kopie, 2 média, 1 mimo domov)</li><li>Veřejná Wi-Fi → MitM útok → VPN</li><li>Veřejné PC → keylogger → anonymní okno, vždy odhlásit</li><li>Phishing, malware, ransomware, kyberšikana</li><li>Technická + organizační ochrana</li></ul></div>
+
+<h2>Obecné zásady bezpečného chování</h2>
+<ul>
+<li>Používat <strong>silná, dlouhá a unikátní hesla</strong> (ideálně přes správce hesel jako Bitwarden nebo 1Password).</li>
+<li>Zapnout <strong>vícefaktorové ověřování (MFA/2FA)</strong> u všech důležitých služeb — i kdyby útočník získal heslo, bez druhého faktoru se nepřihlásí.</li>
+<li>Pravidelně <strong>aktualizovat</strong> operační systém i aplikace — opravují se bezpečnostní díry.</li>
+<li>Dodržovat pravidlo zálohování <span class="hl hl-y">3-2-1</span>: 3 kopie dat, na 2 různých médiích, 1 kopie mimo domov (cloud nebo jiná lokalita).</li>
+<li>Být obezřetný k <strong>přílohám e-mailů</strong> — neklikat na podezřelé odkazy.</li>
+</ul>
+
+<h2>Rizika veřejných počítačů a Wi-Fi</h2>
+<div class="def-grid">
+<div class="def-t">Veřejné PC</div><div class="def-d">Riziko <strong>keyloggerů</strong> (programy zaznamenávající stisky kláves). Ochrana: vždy se odhlásit, používat anonymní okno prohlížeče, nezadávat hesla k bance.</div>
+<div class="def-t">Veřejná Wi-Fi</div><div class="def-d">Riziko útoku <strong>Man-in-the-Middle (MitM)</strong> — útočník vytvoří falešnou Wi-Fi se stejným názvem. Váš telefon se k ní automaticky připojí. Ochrana: VPN (zašifrovaný tunel), kontrolovat HTTPS (zámeček v adresní řádce).</div>
+</div>
+
+<h2>Pojmy a příklady z praxe</h2>
+<div class="def-grid">
+<div class="def-t">Phishing</div><div class="def-d">Podvodné e-maily vylákávající citlivé údaje. Příklad: e-mail tvářící se jako Česká pošta — výzva k úhradě 50 Kč za balíček přes odkaz vedoucí na falešnou platební bránu útočníka.</div>
+<div class="def-t">Malware</div><div class="def-d">Obecný název pro škodlivý software. Podtyp <strong>Ransomware</strong> (WannaCry) — zašifruje data a požaduje výkupné v Bitcoinech.</div>
+<div class="def-t">Kyberšikana</div><div class="def-d">Ubližování a vydírání pomocí technologií. Příklad: falešný profil spolužáka, zveřejnění upravených fotek nebo vyhrožování v online hrách.</div>
+</div>
+
+<h2>Opatření na ochranu dat na ICT zařízeních</h2>
+<div class="def-grid">
+<div class="def-t">Technická</div><div class="def-d">Antivirový software, <strong>Firewall</strong> (filtruje síťový provoz), šifrování disků (BitLocker — bez hesla data z ukradeného notebooku nikdo nepřečte).</div>
+<div class="def-t">Organizační</div><div class="def-d">Pravidla vedení firmy: školení zaměstnanců, směrnice o práci z domova, omezování práv (běžný uživatel si nesmí nainstalovat program).</div>
+</div>
+
+<h2>Kroky při podezření na napadení účtu</h2>
+<ol>
+<li>Okamžitě se přihlásit a <strong>změnit heslo</strong>.</li>
+<li>Zkontrolovat nastavení — odpojit všechna „aktivní neznámá zařízení".</li>
+<li>Zapnout MFA (pokud ještě nebylo).</li>
+<li>Pokud jde o banku — ihned zavolat infolinku a zablokovat kartu.</li>
+<li>Informovat přátele/rodinu, aby nereagovali na zprávy z napadeného účtu (žádosti o peníze).</li>
+</ol>
+
+<div class="box box-r"><strong>⚠️ Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>„Co je Man-in-the-Middle útok?"</strong> — Útočník se vloží mezi vás a router. Sedí na stejné síti (nebo vytvoří falešnou Wi-Fi) a odposlouchává veškerou komunikaci, pokud není šifrovaná.</li>
+<li><strong>„Jaký je rozdíl virus, malware, ransomware?"</strong> — Malware je nadřazený pojem. Virus se sám kopíruje do souborů. Ransomware data zašifruje a chce výkupné. Spyware sleduje uživatele bez vědomí.</li>
+<li><strong>„K čemu slouží 2FA, když mám silné heslo?"</strong> — Hesla mohou uniknout při datovém úniku z jiné služby (breach). 2FA zaručí, že i s uniklým heslem se útočník bez druhého faktoru nepřihlásí.</li>
+<li><strong>„Co je phishing vs. spear-phishing?"</strong> — Phishing = hromadný útok na tisíce lidí. Spear-phishing = cílený útok na konkrétní osobu nebo firmu, používá osobní informace (jméno šéfa, aktuální projekt).</li>
+</ul></div>
+
+<div class="box box-y"><strong>💡 Tip na 15 minut — říkej komisi</strong>
+„Veřejné Wi-Fi sítě jsou nebezpečné i bez klasického hackingu. Útočník sedí u vedlejšího stolu v kavárně, vytvoří falešnou Wi-Fi 'Kavarna_Free' se silnějším signálem. Váš telefon se k ní automaticky připojí. Veškerá data tečou přes útočníkův notebook. Jedinou spolehlivou ochranou je VPN, která vytvoří zašifrovaný tunel — útočník vidí jen nečitelné šifrované znaky."</div>
+
+<div class="page-nav"><span></span><a href="02.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Strukturovaný dokument, práce se zdroji</span><span>→</span></a></div>
+</div></body></html>

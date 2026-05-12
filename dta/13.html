@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DTA 13 &ndash; Základní popisné statistiky dat</title>
+<link rel="stylesheet" href="../css/style.css"></head><body>
+<div class="topbar"><a href="index.html" class="topbar-back">&larr; DTA</a>
+  <span class="topbar-title">Základní popisné statistiky dat</span>
+  <span class="topbar-subject-badge badge-dta">DTA 13</span></div>
+<div class="note-page">
+<div class="q-page-header">
+  <div class="number">DTA &middot; OTÁZKA 13 / 15</div>
+  <h1>Základní popisné statistiky dat</h1>
+  <span class="time-badge">&#9201; ~15 minut</span></div>
+
+<div class="box box-g"><strong>&#128221; Potítko &ndash; napiš si na papír</strong>
+<ul>
+<li>Průměr (citlivý na outliery), Medián (prostřední hodnota), Modus (nejčastější)</li>
+<li>Rozptyl &sigma;&sup2; (v cm&sup2;) &rarr; Směrodatná odchylka &sigma; (v cm) = &radic;rozptyl</li>
+<li>Korelace [-1, 1]: těsnost lineárního vztahu; 0 = žádný vztah</li>
+<li>Kovariace: směr vztahu (+ spolu rostou, &minus; opačně)</li>
+<li>Korelace &ne; příčinnost! (zmrzlina a tonutí)</li>
+</ul></div>
+
+<h2>Míry polohy (střední hodnoty)</h2>
+<div class="table-wrap"><table>
+<tr><th>Míra</th><th>Výpočet</th><th>Kdy použít</th><th>Pandas</th></tr>
+<tr><td><strong>Průměr</strong></td><td>Součet / počet</td><td>Normálně rozdělená data bez outlierů</td><td><code>df['x'].mean()</code></td></tr>
+<tr><td><strong>Medián</strong></td><td>Prostřední hodnota seřazených dat</td><td>Data s outliery (platy, ceny nemovitostí)</td><td><code>df['x'].median()</code></td></tr>
+<tr><td><strong>Modus</strong></td><td>Nejčastější hodnota</td><td>Kategoriální data (nejprodávanější produkt)</td><td><code>df['x'].mode()[0]</code></td></tr>
+</table></div>
+
+<h2>Míry variability</h2>
+<pre>df[<span class="st">'vyska'</span>].var()              <span class="cm"># rozptyl (variance)</span>
+df[<span class="st">'vyska'</span>].std()              <span class="cm"># směrodatná odchylka (ve stejných jednotkách jako data)</span>
+df[<span class="st">'vyska'</span>].min()
+df[<span class="st">'vyska'</span>].max()
+df[<span class="st">'vyska'</span>].quantile(0.25)    <span class="cm"># 1. kvartil Q1</span>
+df[<span class="st">'vyska'</span>].quantile(0.75)    <span class="cm"># 3. kvartil Q3</span></pre>
+
+<div class="box box-b"><strong>Intuice směrodatné odchylky</strong>
+Průměrná výška 175 cm, &sigma; = 5 cm &rarr; ~68 % studentů má výšku 170&ndash;180 cm. &sigma; = 20 cm &rarr; data velmi rozptýlená, průměr nereprezentuje dobře. Čím menší &sigma;, tím reprezentativnější průměr.</div>
+
+<h2>Korelace a kovariace</h2>
+<div class="table-wrap"><table>
+<tr><th></th><th>Korelace (r)</th><th>Kovariace</th></tr>
+<tr><td>Rozsah</td><td>&minus;1 až +1</td><td>Libovolné číslo</td></tr>
+<tr><td>Interpretace</td><td>Těsnost a směr lineárního vztahu</td><td>Pouze směr vztahu</td></tr>
+<tr><td>Silná pozitivní</td><td>r &gt; 0.6 &ndash; spolu rostou</td><td>Pozitivní číslo</td></tr>
+<tr><td>Žádný vztah</td><td>r &asymp; 0</td><td>&asymp; 0</td></tr>
+<tr><td>Silná negativní</td><td>r &lt; &minus;0.6 &ndash; opačně</td><td>Záporné číslo</td></tr>
+</table></div>
+<pre>df.corr()                               <span class="cm"># korelační matice celého DataFrame</span>
+df[<span class="st">'reklama'</span>].corr(df[<span class="st">'trzby'</span>])        <span class="cm"># korelace dvou sloupců</span></pre>
+
+<div class="box box-r"><strong>Korelace &ne; příčinnost!</strong>
+Zmrzlina a tonutí mají vysokou korelaci &ndash; v létě jsou obě četnější. Příčina je třetí faktor (horko), ne zmrzlina způsobující tonutí.</div>
+
+<div class="box box-r"><strong>&#9888; Chytáky a záludné otázky</strong>
+<ul>
+<li><strong>Proč medián místo průměru pro platy?</strong> &ndash; Průměr je citlivý na outliery. Firma má 10 lidí za 30 000 a CEO za 500 000 &rarr; průměr vyjde ~75 000 &ndash; nereprezentatívní. Medián ignoruje extrémní hodnoty.</li>
+<li><strong>Rozdíl rozptyl vs směrodatná odchylka?</strong> &ndash; Rozptyl je průměr čtverců odchylek &ndash; výsledek je v cm&sup2;, nedává intuitivní smysl. Směrodatná odchylka = &radic;rozptyl &rarr; výsledek ve stejných jednotkách jako data.</li>
+<li><strong>Korelace 0.6 &ndash; silná nebo slabá?</strong> &ndash; Záleží na oboru. V sociálních vědách silná. V technických měřeních slabá. Obvyklé prahy: |r| &lt; 0.3 slabá, 0.3&ndash;0.6 střední, &gt; 0.6 silná.</li>
+</ul></div>
+
+<div class="box box-y"><strong>&#128161; Tip na 15 minut &mdash; říkej komisi</strong>
+Popisná statistika popisuje data pomocí několika čísel. Klíčový rozdíl: průměr je citlivý na outliery, medián ne &ndash; proto se platy nebo ceny nemovitostí reportují jako medián. Korelace říká jak těsně dvě veličiny spolu souvisí (&minus;1 až +1), ale korelace není příčinnost &ndash; klasický příklad: zmrzlina a tonutí jsou korelovány, ale zmrzlina tonutí nezpůsobuje.</div>
+
+<div class="page-nav"><a href="12.html" class="nav-btn prev"><span>&larr;</span><span><span class="nav-btn-label">Předchozí</span>Pandas &ndash; DataFrame, import/export, práce s daty</span></a><a href="14.html" class="nav-btn next"><span><span class="nav-btn-label">Další</span>Transformace dat &ndash; datová kvalita a regex</span><span>&rarr;</span></a></div>
+</div></body></html>
